@@ -15,6 +15,7 @@ function Fetch() {
         if (wordDoc.exists()) {
           const data = wordDoc.data();
           setMemberNames(data.names); // Update state with fetched names
+          console.log(data);
         } else {
           console.log("No such document!");
         }
