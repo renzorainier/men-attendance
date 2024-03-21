@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ChildComponent(props) {
+function Buttons(props) {
   // Further processing of the memberNames array
   const processedNames = props.memberNames.map(name => name);
 
@@ -16,4 +16,4 @@ function ChildComponent(props) {
   );
 }
 
-export default ChildComponent;
+export default Buttons;

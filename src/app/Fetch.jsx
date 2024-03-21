@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
-import ChildComponent from './ChildComponent'; // Assuming ChildComponent is in the same directory
+import Buttons from './Buttons.jsx'; // Assuming ChildComponent is in the same directory
 
 function Fetch() {
   const [memberNames, setMemberNames] = useState([]);
@@ -15,6 +15,7 @@ function Fetch() {
         if (wordDoc.exists()) {
           const data = wordDoc.data();
           setMemberNames(data.names);
+          console.log(data);
         } else {
           console.log("No such document!");
         }
@@ -29,7 +30,7 @@ function Fetch() {
   return (
     <div>
       {memberNames.length > 0 ? (
-        <ChildComponent memberNames={memberNames} />  // Pass data as prop
+        <Buttons memberNames={memberNames} />  // Pass data as prop
       ) : (
         <div>Loading names...</div>
       )}
