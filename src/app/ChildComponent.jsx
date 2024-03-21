@@ -2,7 +2,7 @@ import React from 'react';
 
 function ChildComponent(props) {
   // Further processing of the memberNames array
-  const processedNames = props.memberNames.map(name => name.toUpperCase());
+  const processedNames = props.memberNames.map(name => name);
 
   return (
     <div>

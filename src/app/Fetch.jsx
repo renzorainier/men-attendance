@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
+import ChildComponent from './ChildComponent'; // Assuming ChildComponent is in the same directory
 
 function Fetch() {
-  const [memberNames, setMemberNames] = useState([]); // State to store names
+  const [memberNames, setMemberNames] = useState([]);
 
   useEffect(() => {
     const fetchNames = async () => {
-      // Use a more descriptive function name
       try {
-        const wordRef = doc(db, "men", "members"); // Adjust if needed
+        const wordRef = doc(db, "men", "members");  // Adjust path if needed
         const wordDoc = await getDoc(wordRef);
 
         if (wordDoc.exists()) {
           const data = wordDoc.data();
-          setMemberNames(data.names); // Update state with fetched names
-          console.log(data);
+          setMemberNames(data.names);
         } else {
           console.log("No such document!");
         }
@@ -30,11 +29,7 @@ function Fetch() {
   return (
     <div>
       {memberNames.length > 0 ? (
-        <ul>
-          {memberNames.map((name, index) => (
-            <li key={index}> {name} </li>
-          ))}
-        </ul>
+        <ChildComponent memberNames={memberNames} />  // Pass data as prop
       ) : (
         <div>Loading names...</div>
       )}
