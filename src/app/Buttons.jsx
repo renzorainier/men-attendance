@@ -53,7 +53,7 @@ function Buttons(props) {
 
         await updateDoc(docRef, {
           [currentWeekNumber]: selectedNames.includes(name),
-          [timeField]: selectedNames.includes(name) ? uploadTime : null, // Set timeField if selected
+          [timeField]: selectedNames.includes(name) ? uploadTime : "", // Set timeField if selected
         });
       }
 
