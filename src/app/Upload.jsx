@@ -19,7 +19,7 @@ function Upload() {
       for (const name of names) {
         const data = {};
         for (let i = 1; i <= 52; i++) {
-          data[String(i)] = false;
+          data[String(i)] = "";
           data[String(i) + "t"] = "";
         }
 
