@@ -18,7 +18,7 @@ function Upload() {
     try {
       for (const name of names) {
         const data = {}; // Create an object to hold field values
-        for (let i = 1; i <= 52; i++) {
+        for (let i = 10; i <= 52; i++) {
           data[String(i)] = ""; // Add fields "1" to "52" with empty values
         }
 
