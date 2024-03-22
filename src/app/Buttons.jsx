@@ -20,10 +20,8 @@ function Buttons(props) {
 
   return (
     <div className="flex flex-col items-center">
-      <h2>
-        <span class="text-2xl font-semibold bg-gray-100 p-2 rounded-md shadow-sm mb-4">
+      <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
           Members:
-        </span>
       </h2>
       <div className="flex flex-col gap-2 w-full"> {/* Container for buttons */}
         {sortedMemberNames.map((name, index) => (
