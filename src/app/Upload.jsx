@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { collection, addDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore"; // Change: Import setDoc
 import { db } from "./firebase.js";
 
 function Upload() {
@@ -8,14 +8,13 @@ function Upload() {
   const uploadToFirestore = async () => {
     try {
       for (const name of names) {
-        const docRef = await addDoc(collection(db, "memberRecords"), {
-          name: name, // Upload each name individually
-        });
-        console.log("Document uploaded with ID: ", docRef.id);
+        const docRef = doc(db, "memberRecords", name); // Get a document reference with the name as ID
+        await setDoc(docRef, {}); // Create an empty document
+        console.log("Document with ID '" + name + "' created.");
       }
       setNames([]);
     } catch (error) {
-      console.error("Error uploading documents: ", error);
+      console.error("Error creating documents: ", error);
     }
   };
 
