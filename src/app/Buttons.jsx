@@ -20,7 +20,7 @@ function Buttons(props) {
 
   return (
     <div>
-     <h2>Member Buttons:</h2>
+     <h2>Members:</h2>
       <div className="flex flex-col gap-2">
         {props.memberNames.map((name, index) => (
           <button
