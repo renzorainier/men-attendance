@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { doc, updateDoc  } from "firebase/firestore";
+import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js";
 
 function Buttons(props) {
@@ -41,13 +41,17 @@ function Buttons(props) {
   // upload to firebase
   const updateFirebase = async () => {
     try {
-      for (const name of selectedNames) {
+      const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Get all members
+      const allMemberNames = membersSnapshot.docs.map((doc) => doc.id);
+
+      for (const name of allMemberNames) {
         const docRef = doc(db, "memberRecords", name);
         await updateDoc(docRef, {
-          [currentWeekNumber]: true, // Set the week number field to true
+          [currentWeekNumber]: selectedNames.includes(name), // True if selected, otherwise false
         });
       }
-      setSelectedNames([]); // Optionally clear selected names
+
+      setSelectedNames([]);
       console.log("Firebase documents updated successfully!");
     } catch (error) {
       console.error("Error updating Firebase documents: ", error);
