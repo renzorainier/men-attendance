@@ -3,7 +3,16 @@ import { doc, setDoc } from "firebase/firestore"; // Change: Import setDoc
 import { db } from "./firebase.js";
 
 function Upload() {
-  const [names, setNames] = useState(["John Doe", "Jane Smith", "Alex Johnson"]);
+    const [names, setNames] = useState([
+        "Renz Pasagdan",
+        "Sean Samaniego",
+        "Earl Rance",
+        "Vince Pasagdan",
+        "Calvin Calica",
+        "Vaughn Tio",
+        "Sean Tio",
+        "Drei Gammad"
+      ]);
 
   const uploadToFirestore = async () => {
     try {
