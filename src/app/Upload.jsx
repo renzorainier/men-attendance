@@ -17,9 +17,10 @@ function Upload() {
   const uploadToFirestore = async () => {
     try {
       for (const name of names) {
-        const data = {}; // Create an object to hold field values
+        const data = {};
         for (let i = 1; i <= 52; i++) {
-          data[String(i)] = ""; // Add fields "1" to "52" with empty values
+          data[String(i)] = "";
+          data[String(i) + "t"] = ""; // Add the "1t" to "52t" fields
         }
 
         const docRef = doc(db, "memberRecords", name);
@@ -28,13 +29,13 @@ function Upload() {
       }
       setNames([]);
     } catch (error) {
-      console.error("Error creatisng dodcumsssents: ", error);
+      console.error("Error creating documents: ", error);
     }
   };
 
   return (
     <div>
-      <button onClick={uploadToFirestore}>Upload to sFirestore</button>
+      <button onClick={uploadToFirestore}>Upload to Firestore</button>
     </div>
   );
 }
