@@ -34,12 +34,14 @@ function Buttons(props) {
             {name}
           </button>
         ))}
-        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl">
-          Button 1
-        </button>
-        <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl">
-          Button 2
-        </button>
+       <div className="flex gap-2 justify-center">
+          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl">
+            Button 1
+          </button>
+          <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl">
+            Button 2
+          </button>
+        </div>
       </div>
     </div>
   );
