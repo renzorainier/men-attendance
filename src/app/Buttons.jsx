@@ -36,7 +36,7 @@ function Buttons(props) {
           </button>
         ))}
       </div>
-      {selectedNames.length > 0 && (
+      {/* {selectedNames.length > 0 && (
         <>
           <h3>Selected Names:</h3>
           <ul>
@@ -45,7 +45,7 @@ function Buttons(props) {
             ))}
           </ul>
         </>
-      )}
+      )} */}
     </div>
   );
 }
