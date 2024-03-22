@@ -25,7 +25,7 @@ function Buttons(props) {
         {props.memberNames.map((name, index) => (
           <button
             key={index}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded mx-10
+            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded
               ${selectedNames.includes(name) ? 'bg-gray-500' : ''}
               text-lg sm:text-xl md:text-2xl`} // Responsive text sizes
             onClick={() => handleClick(name)}
