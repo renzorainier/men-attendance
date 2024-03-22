@@ -3,7 +3,7 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
 
 function Upload() {
-  const [names, setNames] = useState([]);
+  const [names, setNames] = useState(["John Doe", "Jane Smith", "Alex Johnson"]);
 
   const uploadToFirestore = async () => {
     try {
@@ -11,7 +11,7 @@ function Upload() {
         names: names
       });
       console.log("Document uploaded with ID: ", docRef.id);
-      setNames([]);
+      setNames([]); // Optionally clear the list after upload
     } catch (error) {
       console.error("Error uploading document: ", error);
     }
