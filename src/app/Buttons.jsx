@@ -18,16 +18,18 @@ function Buttons(props) {
     }
   };
 
+  const sortedMemberNames = props.memberNames.sort();
+
   return (
     <div className="">
      <h2>Members:</h2>
-      <div className="flex flex-col gap-2">
-        {props.memberNames.map((name, index) => (
+     <div className="flex flex-col gap-2">
+        {sortedMemberNames.map((name, index) => (
           <button
             key={index}
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded
-              ${selectedNames.includes(name) ? 'bg-gray-500' : ''}
-              text-lg sm:text-xl md:text-2xl`} // Responsive text sizes
+               ${selectedNames.includes(name) ? 'bg-gray-500' : ''}
+               text-lg sm:text-xl md:text-2xl`}
             onClick={() => handleClick(name)}
           >
             {name}
