@@ -26,8 +26,7 @@ function Buttons(props) {
           <button
             key={index}
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold mx-10 rounded
-              ${selectedNames.includes(name) ? 'bg-gray-500' : ''}
-              mx-4`} // Add w-full for full width, and mx-4 for margin
+              ${selectedNames.includes(name) ? 'bg-gray-500' : ''}`} // Add w-full for full width, and mx-4 for margin
             onClick={() => handleClick(name)}
           >
             {name}
