@@ -26,20 +26,18 @@ function Buttons(props) {
         {sortedMemberNames.map((name, index) => (
           <button
             key={index}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl
+            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
               ${selectedNames.includes(name) ? "bg-gray-500" : ""}
-              text-lg sm:text-xl md:text-2xl w-full mx-4`} // Make buttons full width
+              text-lg sm:text-xl md:text-2xl`} // Remove any margin classes
             onClick={() => handleClick(name)}
           >
             {name}
           </button>
         ))}
-        {/* Since you want these buttons to also be centered and full-width, we don't
-            need a special container for them. We'll add them directly in the main container */}
-        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
+        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl">
           Button 1
         </button>
-        <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
+        <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl">
           Button 2
         </button>
       </div>
