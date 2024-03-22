@@ -18,7 +18,7 @@ function Upload() {
     try {
       for (const name of names) {
         const docRef = doc(db, "memberRecords", name); // Get a document reference with the name as ID
-        await setDoc(docRef, {}); // Create an empty document
+        await setDoc(docRef, {renz: "hehe"}); // Create an empty document
         console.log("Document with ID '" + name + "' created.");
       }
       setNames([]);
