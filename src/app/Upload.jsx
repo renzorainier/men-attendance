@@ -35,8 +35,13 @@ function Upload() {
 
   return (
     <div>
-      <button onClick={uploadToFirestore}>Upload to Firestore</button>
-    </div>
+    <button
+      className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-10 py-2 px-4 rounded"
+      onClick={uploadToFirestore}
+    >
+      Upload to Firestore
+    </button>
+  </div>
   );
 }
 
