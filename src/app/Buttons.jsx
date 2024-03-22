@@ -38,12 +38,12 @@ function Buttons(props) {
           </button>
         ))}
         <div className="flex gap-2 justify-center w-full"> {/* Container for additional buttons */}
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
+          {/* <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
             Button 1
           </button>
           <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
             Button 2
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
