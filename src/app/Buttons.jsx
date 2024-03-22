@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react"
-import { doc, setDoc } from "firebase/firestore";
+import { doc, updateDoc  } from "firebase/firestore";
 import { db } from "./firebase.js";
-
-// use this for firebase (const docRef = doc(db, "memberRecords", name);)
 
 function Buttons(props) {
   const [selectedNames, setSelectedNames] = useState([]);
@@ -40,6 +38,22 @@ function Buttons(props) {
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
   }
 
+  // upload to firebase
+  const updateFirebase = async () => {
+    try {
+      for (const name of selectedNames) {
+        const docRef = doc(db, "memberRecords", name);
+        await updateDoc(docRef, {
+          [currentWeekNumber]: true, // Set the week number field to true
+        });
+      }
+      setSelectedNames([]); // Optionally clear selected names
+      console.log("Firebase documents updated successfully!");
+    } catch (error) {
+      console.error("Error updating Firebase documents: ", error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
@@ -68,12 +82,14 @@ function Buttons(props) {
               </ul>
             </>
           )}
-       <div className="flex gap-2 justify-center">
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl">
-            Button to Upload to firebase
-          </button>
-
-        </div>
+           <div className="flex gap-2 justify-center">
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
+          onClick={updateFirebase} // Attach the update function
+        >
+          Button to Upload to Firebase
+        </button>
+      </div>
       </div>
       <p>Current Week Number: {currentWeekNumber}</p>
 
