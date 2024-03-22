@@ -21,12 +21,13 @@ function Buttons(props) {
   return (
     <div>
       <h2>Member Buttons:</h2>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-col gap-2"> {/* Change to flex-col */}
         {props.memberNames.map((name, index) => (
           <button
             key={index}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded
-              ${selectedNames.includes(name) ? 'bg-gray-500' : ''}`} // Apply a style change if selected
+            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-10 rounded w-full
+              ${selectedNames.includes(name) ? 'bg-gray-500' : ''}
+              mx-4`} // Add w-full for full width, and mx-4 for margin
             onClick={() => handleClick(name)}
           >
             {name}
