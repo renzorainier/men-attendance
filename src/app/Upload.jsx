@@ -19,8 +19,8 @@ function Upload() {
       for (const name of names) {
         const data = {};
         for (let i = 1; i <= 52; i++) {
-          data[String(i)] = "";
-          data[String(i) + "t"] = ""; // Add the "1t" to "52t" fields
+          data[String(i)] = false;
+          data[String(i) + "t"] = "";
         }
 
         const docRef = doc(db, "memberRecords", name);
