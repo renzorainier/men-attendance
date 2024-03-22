@@ -7,13 +7,15 @@ function Upload() {
 
   const uploadToFirestore = async () => {
     try {
-      const docRef = await addDoc(collection(db, "memberRecords"), {
-        names: names
-      });
-      console.log("Document uploaded with ID: ", docRef.id);
-      setNames([]); // Optionally clear the list after upload
+      for (const name of names) {
+        const docRef = await addDoc(collection(db, "memberRecords"), {
+          name: name, // Upload each name individually
+        });
+        console.log("Document uploaded with ID: ", docRef.id);
+      }
+      setNames([]);
     } catch (error) {
-      console.error("Error uploading document: ", error);
+      console.error("Error uploading documents: ", error);
     }
   };
 
