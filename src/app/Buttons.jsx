@@ -25,22 +25,23 @@ function Buttons(props) {
           Members:
         </span>
       </h2>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 w-full"> {/* Container for buttons */}
         {sortedMemberNames.map((name, index) => (
           <button
             key={index}
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl
               ${selectedNames.includes(name) ? "bg-gray-500" : ""}
-              text-lg sm:text-xl md:text-2xl`}
-            onClick={() => handleClick(name)}>
+              text-lg sm:text-xl md:text-2xl w-full mx-4`} // Make buttons full width
+            onClick={() => handleClick(name)}
+          >
             {name}
           </button>
         ))}
-        <div className="flex gap-2">
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl">
+        <div className="flex gap-2 justify-center w-full"> {/* Container for additional buttons */}
+          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
             Button 1
           </button>
-          <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl">
+          <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
             Button 2
           </button>
         </div>
