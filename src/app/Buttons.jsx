@@ -34,6 +34,18 @@ function Buttons(props) {
             {name}
           </button>
         ))}
+
+{selectedNames.length > 0 && (
+  <>
+    <h3>Selected Names:</h3>
+    <ul>
+      {selectedNames.map((name, index) => (
+        <li key={index}> {name} </li>
+      ))}
+    </ul>
+  </>
+)}
+
        <div className="flex gap-2 justify-center">
           <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl">
             Button 1
