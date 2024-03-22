@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"
+
 
 function Buttons(props) {
   const [selectedNames, setSelectedNames] = useState([]);
@@ -17,9 +18,6 @@ function Buttons(props) {
   };
 
   const sortedMemberNames = props.memberNames.sort();
-
-
-
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
   useEffect(() => {
