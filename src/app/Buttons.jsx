@@ -34,8 +34,6 @@ function Buttons(props) {
           </button>
         ))}
       </div>
-
-      {/* Display the selected names */}
       {selectedNames.length > 0 && (
         <>
           <h3>Selected Names:</h3>
