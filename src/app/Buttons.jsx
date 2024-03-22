@@ -34,18 +34,24 @@ function Buttons(props) {
           </button>
         ))}
       </div>
-      {selectedNames.length > 0 && (
-        <>
-          <h3>Selected Names:</h3>
-          <ul>
-            {selectedNames.map((name, index) => (
-              <li key={index}> {name} </li>
-            ))}
-          </ul>
-        </>
-      )}
+
     </div>
   );
 }
 
 export default Buttons;
+
+
+
+
+
+// {selectedNames.length > 0 && (
+//   <>
+//     <h3>Selected Names:</h3>
+//     <ul>
+//       {selectedNames.map((name, index) => (
+//         <li key={index}> {name} </li>
+//       ))}
+//     </ul>
+//   </>
+// )}
