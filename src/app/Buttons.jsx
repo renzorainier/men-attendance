@@ -3,6 +3,8 @@ import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js";
 
 function Buttons(props) {
+  const uploadTime = new Date().toLocaleString(); // Get the time of upload
+
   const [selectedNames, setSelectedNames] = useState([]);
 
   const handleClick = (name) => {
@@ -41,13 +43,17 @@ function Buttons(props) {
   // upload to firebase
   const updateFirebase = async () => {
     try {
-      const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Get all members
+      const membersSnapshot = await getDocs(collection(db, "memberRecords"));
       const allMemberNames = membersSnapshot.docs.map((doc) => doc.id);
 
       for (const name of allMemberNames) {
         const docRef = doc(db, "memberRecords", name);
+        const timeField = currentWeekNumber + "t";
+        const uploadTime = new Date().toLocaleString(); // Get the time of upload
+
         await updateDoc(docRef, {
-          [currentWeekNumber]: selectedNames.includes(name), // True if selected, otherwise false
+          [currentWeekNumber]: selectedNames.includes(name),
+          [timeField]: selectedNames.includes(name) ? uploadTime : null, // Set timeField if selected
         });
       }
 
@@ -57,6 +63,7 @@ function Buttons(props) {
       console.error("Error updating Firebase documents: ", error);
     }
   };
+
 
   return (
     <div className="flex flex-col items-center">
