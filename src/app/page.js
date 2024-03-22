@@ -4,7 +4,7 @@ import Main from "./Main.jsx"
 
 export default function Home() {
   return (
-    <main className="m-5">
+    <main className="">
       <Main/>
     </main>
   );
