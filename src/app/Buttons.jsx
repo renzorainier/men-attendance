@@ -19,7 +19,7 @@ function Buttons(props) {
   const sortedMemberNames = props.memberNames.sort();
 
   return (
-    <div className="">
+    <div className="flex flex-col items-center">
       <h2>
         <span class="text-2xl font-semibold bg-gray-100 p-2 rounded-md shadow-sm mb-4">
           Members:
