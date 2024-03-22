@@ -17,11 +17,10 @@ function Buttons(props) {
   };
 
   const sortedMemberNames = props.memberNames.sort();
-
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
-          Members:
+        Members:
       </h2>
       <div className="flex flex-col gap-2 w-full"> {/* Container for buttons */}
         {sortedMemberNames.map((name, index) => (
@@ -35,14 +34,14 @@ function Buttons(props) {
             {name}
           </button>
         ))}
-        <div className="flex gap-2 justify-center w-full"> {/* Container for additional buttons */}
-          {/* <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
-            Button 1
-          </button>
-          <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
-            Button 2
-          </button> */}
-        </div>
+        {/* Since you want these buttons to also be centered and full-width, we don't
+            need a special container for them. We'll add them directly in the main container */}
+        <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
+          Button 1
+        </button>
+        <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl w-full mx-4">
+          Button 2
+        </button>
       </div>
     </div>
   );
