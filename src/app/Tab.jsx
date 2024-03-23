@@ -1,6 +1,10 @@
+import React, { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
 
 function Tab() {
+
+  const [state, setState] = useState(false);
+
   return (
     <div>
       <div className="flex justify-center pt-10  items-center">
