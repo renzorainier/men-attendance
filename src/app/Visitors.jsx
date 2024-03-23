@@ -23,7 +23,6 @@ function Visitors() {
 
   const addVisitor = async () => {
     if (newVisitorName.trim() !== "") {
-      try {
         const docRef = await setDoc(doc(db, "visitors", newVisitorName), {
           name: newVisitorName,
         });
@@ -36,9 +35,8 @@ function Visitors() {
         setVisitors([...visitors, { id: docRef.id, name: newVisitorName }]);
         setNewVisitorName("");
         console.log("Visitor added with ID: ", docRef.id);
-      } catch (error) {
-        console.error("Error adding visitor: ", error);
-      }
+
+
     }
   };
 
