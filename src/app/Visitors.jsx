@@ -46,27 +46,6 @@ function Visitors() {
     }
   };
 
-  const [filteredVisitors, setFilteredVisitors] = useState([]);
-
-  useEffect(() => {
-    const filterRecentVisitors = () => {
-      const recentWeeksThreshold = currentWeekNumber - 4; // Adjust the number '4' if needed 
-      const recentVisitors = visitors.filter((visitor) => {
-        // Find the highest week field in the visitor's data
-        const highestWeek = Math.max(...Object.keys(visitor).filter(key => !isNaN(key)));
-        return highestWeek >= recentWeeksThreshold;
-      });
-      setFilteredVisitors(recentVisitors);
-    };
-
-    filterRecentVisitors(); // Call initially
-    
-    // Update the filter whenever visitors or currentWeekNumber changes
-    const dependencies = [visitors, currentWeekNumber];
-    useEffect(filterRecentVisitors, dependencies);
-
-  }, [visitors, currentWeekNumber]); 
-
   useEffect(() => {
     // Update the week number periodically (if needed)
     const intervalId = setInterval(() => {
@@ -85,8 +64,6 @@ function Visitors() {
   }
 
 
-
-
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
@@ -95,7 +72,7 @@ function Visitors() {
 
       <div className="flex flex-col gap-2 w-full">
         <ul>
-          {filteredVisitors.map((visitor) => (
+          {visitors.map((visitor) => (
             <li key={visitor.id}>{visitor.name}</li>
           ))}
         </ul>
@@ -121,27 +98,3 @@ function Visitors() {
 
 export default Visitors;
 
-
-
-
-// return (
-//     <div className="flex flex-col items-center">
-//
-
-//       <div className="flex gap-2 justify-center">
-//         <input
-//           type="text"
-//           value={newVisitorName}
-//           onChange={handleInputChange}
-//           placeholder="Enter visitor name"
-//           className="border border-gray-400 rounded p-2"
-//         />
-//         <button
-//           className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-//           onClick={addVisitor}
-//         >
-//           Add Visitor
-//         </button>
-//       </div>
-//     </div>
-//   );
