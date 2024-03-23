@@ -18,7 +18,7 @@ function Members() {
         id: doc.id,
         ...doc.data(),
       }));
-      setMemberNames(memberData.map(member => member.id)); // Store member names
+      setMemberNames(memberData.map((member) => member.id)); // Store member names
       setMemberData(memberData); // Store member data
     };
 
@@ -88,33 +88,36 @@ function Members() {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex flex-col gap-2 w-full">
-      {memberNames.map((name, index) => {
-          const member = memberData.find((m) => m.id === name);
+      <div
+        className="w-full text-gray-700 bg-white p-5 border rounded-lg shadow-lg mx-auto"
+        style={{ maxWidth: "90%" }}>
+        <div className="flex flex-col gap-2 w-full">
+          {memberNames.map((name, index) => {
+            const member = memberData.find((m) => m.id === name);
 
-          return (
-            <button
-              key={index}
-              className={`bg-gray-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
+            return (
+              <button
+                key={index}
+                className={`bg-gray-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
                     ${selectedNames.includes(name) ? "bg-gray-500" : ""}
                     ${member && member[currentWeekNumber] ? "bg-green-500" : ""}
                     text-lg sm:text-xl md:text-2xl`}
-              onClick={() => handleClick(name)}
-            >
-              {name}
-            </button>
-          );
-        })}
-        {selectedNames.length > 0 && (
-          <>
-            <h3>Selected Names:</h3>
-            <ul>
-              {selectedNames.map((name, index) => (
-                <li key={index}> {name} </li>
-              ))}
-            </ul>
-          </>
-        )}
+                onClick={() => handleClick(name)}>
+                {name}
+              </button>
+            );
+          })}
+          {selectedNames.length > 0 && (
+            <>
+              <h3>Selected Names:</h3>
+              <ul>
+                {selectedNames.map((name, index) => (
+                  <li key={index}> {name} </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex gap-2 pt-10 justify-center">
