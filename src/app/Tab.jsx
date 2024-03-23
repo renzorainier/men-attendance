@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
+import Fetch from "./Fetch"
 
 function Tab() {
 
@@ -31,14 +32,18 @@ function Tab() {
           </Switch>
         </div>
       </div>
-<div>
-{state ? (
-            <div>
-              <Rank data={attendanceData} />
-            </div>
-          ) : ()
-}
-</div>
+        <div>
+        {state ? (
+                    <div>
+
+                    </div>
+                  ) : (
+                    <div>
+
+                    </div>
+                  )
+        }
+        </div>
 
     </div>
   );
