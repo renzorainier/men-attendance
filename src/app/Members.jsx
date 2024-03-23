@@ -6,7 +6,6 @@ function Members(props) {
   const uploadTime = new Date().toLocaleString();
 
   const [selectedNames, setSelectedNames] = useState([]);
-  // const [memberNames, setMemberNames] = useState([]);
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
 
@@ -101,7 +100,7 @@ function Members(props) {
       <div className="flex gap-2 pt-10 justify-center">
         <button
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-          onClick={updateFirebase} // Attach the update function
+          onClick={updateFirebase}
         >
           Button to Upload to Firebase
         </button>
