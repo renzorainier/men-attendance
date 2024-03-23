@@ -5,11 +5,12 @@ import { db } from "./firebase.js"; // Import your Firebase config
 function Members() {
   const uploadTime = new Date().toLocaleString();
 
+  const [selectedNames, setSelectedNames] = useState([]);
   const [memberNames, setMemberNames] = useState([]);
-  const [memberData, setMemberData] = useState([]);
+  const [memberData, setMemberData] = useState([]); // For storing week data
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
-  // Fetch data on component mount
+  // Fetch member names and week data on component mount
   useEffect(() => {
     const fetchMembers = async () => {
       const membersSnapshot = await getDocs(collection(db, "memberRecords"));
@@ -17,8 +18,8 @@ function Members() {
         id: doc.id,
         ...doc.data(),
       }));
-      setMemberNames(memberData.map(member => member.id));
-      setMemberData(memberData);
+      setMemberNames(memberData.map(member => member.id)); // Store member names
+      setMemberData(memberData); // Store member data
     };
 
     fetchMembers();
@@ -26,39 +27,41 @@ function Members() {
 
   // Handle click on a member name
   const handleClick = (name) => {
-    const memberIndex = memberData.findIndex((m) => m.id === name);
-    const updatedMemberData = [...memberData];
-    updatedMemberData[memberIndex] = {
-      ...updatedMemberData[memberIndex],
-      [currentWeekNumber]: !updatedMemberData[memberIndex][currentWeekNumber]
-    };
-    setMemberData(updatedMemberData);
+    const nameIndex = selectedNames.indexOf(name);
+    if (nameIndex === -1) {
+      setSelectedNames([...selectedNames, name]);
+    } else {
+      setSelectedNames([
+        ...selectedNames.slice(0, nameIndex),
+        ...selectedNames.slice(nameIndex + 1),
+      ]);
+    }
   };
 
   // Update Firebase
   const updateFirebase = async () => {
     try {
-      for (const member of memberData) {
-        const docRef = doc(db, "memberRecords", member.id);
+      const membersSnapshot = await getDocs(collection(db, "memberRecords"));
+      const allMemberNames = membersSnapshot.docs.map((doc) => doc.id);
+
+      for (const name of allMemberNames) {
+        const docRef = doc(db, "memberRecords", name);
         const timeField = currentWeekNumber + "t";
 
         await updateDoc(docRef, {
-          [currentWeekNumber]: member[currentWeekNumber],
-          [timeField]: member[currentWeekNumber] ? uploadTime : "",
+          [currentWeekNumber]: selectedNames.includes(name),
+          [timeField]: selectedNames.includes(name) ? uploadTime : "",
         });
       }
 
-      // Find the selected names
-      const selectedNames = memberData.filter(member => member[currentWeekNumber]).map(member => member.id);
-
+      setSelectedNames([]);
       console.log("Firebase documents updated successfully!");
-      console.log("Selected Names:", selectedNames);
     } catch (error) {
       console.error("Error updating Firebase documents: ", error);
     }
   };
 
-  // Week Number Calculation (same as before)
+  // Week Number Calculation
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentWeekNumber(getWeekNumber());
@@ -68,20 +71,33 @@ function Members() {
   }, []);
 
   function getWeekNumber() {
-    // ... (same week number calculation code)
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    return (
+      1 +
+      Math.round(
+        ((date.getTime() - week1.getTime()) / 86400000 -
+          3 +
+          ((week1.getDay() + 6) % 7)) /
+          7
+      )
+    );
   }
 
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col gap-2 w-full">
-        {memberNames.map((name, index) => {
+      {memberNames.map((name, index) => {
           const member = memberData.find((m) => m.id === name);
 
           return (
             <button
               key={index}
-              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
-                    ${member && member[currentWeekNumber] ? "bg-green-500" : "bg-gray-500"}
+              className={`bg-gray-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
+                    ${selectedNames.includes(name) ? "bg-gray-500" : ""}
+                    ${member && member[currentWeekNumber] ? "bg-green-500" : ""}
                     text-lg sm:text-xl md:text-2xl`}
               onClick={() => handleClick(name)}
             >
@@ -89,12 +105,22 @@ function Members() {
             </button>
           );
         })}
+        {selectedNames.length > 0 && (
+          <>
+            <h3>Selected Names:</h3>
+            <ul>
+              {selectedNames.map((name, index) => (
+                <li key={index}> {name} </li>
+              ))}
+            </ul>
+          </>
+        )}
       </div>
 
       <div className="flex gap-2 pt-10 justify-center">
         <button
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-          onClick={updateFirebase}
+          onClick={updateFirebase} // Attach the update function
         >
           Button to Upload to Firebase
         </button>
@@ -104,7 +130,6 @@ function Members() {
 }
 
 export default Members;
-
 
 //
 
