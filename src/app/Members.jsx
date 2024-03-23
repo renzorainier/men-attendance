@@ -88,7 +88,7 @@ function Members() {
             </button>
           );
         })}
-        {selectedNames.length > 0 && (
+        {/* {selectedNames.length > 0 && (
           <>
             <h3>Selected Names:</h3>
             <ul>
@@ -97,7 +97,7 @@ function Members() {
               ))}
             </ul>
           </>
-        )}
+        )} */}
       </div>
 
       <div className="flex gap-2 pt-10 justify-center">
