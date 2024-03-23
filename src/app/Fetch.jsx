@@ -1,39 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase.js";
-import Members from './Members.jsx'; // Assuming ChildComponent is in the same directory
 
 function Fetch() {
-  const [memberNames, setMemberNames] = useState([]);
+  const [allDocuments, setAllDocuments] = useState([]);
 
   useEffect(() => {
-    const fetchNames = async () => {
+    const fetchAllDocuments = async () => {
       try {
-        const wordRef = doc(db, "men", "members");  // Adjust path if needed
-        const wordDoc = await getDoc(wordRef);
+        const documentsRef = collection(db, "memberRecords"); // Replace 'yourCollectionName'
+        const querySnapshot = await getDocs(documentsRef);
 
-        if (wordDoc.exists()) {
-          const data = wordDoc.data();
-          setMemberNames(data.names);
-          console.log(data);
-        } else {
-          console.log("No such document!");
-        }
+        const fetchedDocuments = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+
+        setAllDocuments(fetchedDocuments);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
     };
 
-    fetchNames();
+    fetchAllDocuments();
   }, []);
+
+  // Here's where you'll utilize the 'allDocuments' array
+  useEffect(() => {
+    if (allDocuments.length > 0) {
+      // Do something with all the fetched documents.
+      console.log("All Documents Fetched:", allDocuments);
+
+      // Here are some examples of what you can do:
+      // - Store them in a global state (Context API or State Management Library)
+      // - Pass them to another function for processing
+      // - Trigger other operations based on the data
+    }
+  }, [allDocuments]);
 
   return (
     <div>
-      {memberNames.length > 0 ? (
-        <Members memberNames={memberNames} />  // Pass data as prop
-      ) : (
-        <div>Loading names...</div>
-      )}
+      {/* UI to display loading state while documents are being fetched */}
+      {allDocuments.length === 0 ? <p>Loading...</p> : null}
     </div>
   );
 }
