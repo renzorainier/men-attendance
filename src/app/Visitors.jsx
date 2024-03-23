@@ -119,8 +119,6 @@ function Visitors() {
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
         Visitors:
       </h2>
-
-      {/* Recent Visitors Buttons */}
       <div className="flex flex-col gap-2 w-full">
         <h3>Recent Visitors:</h3>
         <div className="flex flex-col gap-2">
@@ -136,9 +134,6 @@ function Visitors() {
           ))}
         </div>
       </div>
-
-
-
       <div className="flex flex-col gap-2 w-full">
         <h3>Older Visitors:</h3>
         <div className="flex flex-col gap-2">
@@ -155,10 +150,6 @@ function Visitors() {
         </div>
       </div>
 
-
-      {/* (Similar section for Older Visitors) */}
-
-      {/* Input and Update Button */}
       <div className="flex gap-2 justify-center mt-4">
         <input
           type="text"
