@@ -2,13 +2,23 @@ import React, { useState, useEffect } from "react";
 import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js";
 
-function Members(props) {
+function Members() {
   const uploadTime = new Date().toLocaleString();
 
   const [selectedNames, setSelectedNames] = useState([]);
+  const [memberNames, setMemberNames] = useState([]);
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
+  // Fetch member names on component mount
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
+      const names = membersSnapshot.docs.map((doc) => doc.id);
+      setMemberNames(names);
+    };
 
+    fetchMembers();
+  }, []);
 
   // Handle click on a member name
   const handleClick = (name) => {
@@ -75,7 +85,7 @@ function Members(props) {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col gap-2 w-full">
-        {props.memberNames.map((name, index) => (
+        {memberNames.map((name, index) => (
           <button
             key={index}
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
@@ -100,7 +110,7 @@ function Members(props) {
       <div className="flex gap-2 pt-10 justify-center">
         <button
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-          onClick={updateFirebase}
+          onClick={updateFirebase} // Attach the update function
         >
           Button to Upload to Firebase
         </button>
@@ -110,22 +120,6 @@ function Members(props) {
 }
 
 export default Members;
-
-
-
-
-// Fetch member names on component mount
-  // useEffect(() => {
-  //   const fetchMembers = async () => {
-  //     const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
-  //     const names = membersSnapshot.docs.map((doc) => doc.id);
-  //     setMemberNames(names);
-  //   };
-
-  //   fetchMembers();
-  // }, []);
-
-
 
 //
 
