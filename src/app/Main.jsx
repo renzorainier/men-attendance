@@ -13,8 +13,8 @@ function Main() {
   return (
     <div>
       {/* <Fetch />
-      <Upload />
       <Visitors/> */}
+      <Upload />
       <Tab/>
     </div>
   );
