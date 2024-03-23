@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
 import Fetch from "./Fetch";
 import Visitors from "./Visitors";
+import Members from "./Members";
 
 function Tab() {
   const [state, setState] = useState(false);
@@ -39,7 +40,7 @@ function Tab() {
           </div>
         ) : (
           <div>
-            <Fetch />
+            <Members />
           </div>
         )}
       </div>
