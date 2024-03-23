@@ -46,6 +46,27 @@ function Visitors() {
     }
   };
 
+  const [filteredVisitors, setFilteredVisitors] = useState([]);
+
+  useEffect(() => {
+    const filterRecentVisitors = () => {
+      const recentWeeksThreshold = currentWeekNumber - 4; // Adjust the number '4' if needed 
+      const recentVisitors = visitors.filter((visitor) => {
+        // Find the highest week field in the visitor's data
+        const highestWeek = Math.max(...Object.keys(visitor).filter(key => !isNaN(key)));
+        return highestWeek >= recentWeeksThreshold;
+      });
+      setFilteredVisitors(recentVisitors);
+    };
+
+    filterRecentVisitors(); // Call initially
+    
+    // Update the filter whenever visitors or currentWeekNumber changes
+    const dependencies = [visitors, currentWeekNumber];
+    useEffect(filterRecentVisitors, dependencies);
+
+  }, [visitors, currentWeekNumber]); 
+
   useEffect(() => {
     // Update the week number periodically (if needed)
     const intervalId = setInterval(() => {
@@ -64,6 +85,8 @@ function Visitors() {
   }
 
 
+
+
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
@@ -72,7 +95,7 @@ function Visitors() {
 
       <div className="flex flex-col gap-2 w-full">
         <ul>
-          {visitors.map((visitor) => (
+          {filteredVisitors.map((visitor) => (
             <li key={visitor.id}>{visitor.name}</li>
           ))}
         </ul>
