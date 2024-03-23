@@ -4,7 +4,7 @@ import Main from "./Main.jsx"
 
 export default function Home() {
   return (
-    <main className="">
+    <main className=""style={{ maxWidth: "90%" }}>
       <Main/>
     </main>
   );
