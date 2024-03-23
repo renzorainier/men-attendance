@@ -45,7 +45,7 @@ function Visitors() {
     if (newVisitorName.trim() !== "") {
       try {
         const docRef = await setDoc(doc(db, "visitors", newVisitorName), {
-          [currentWeekNumber]: ,
+          [currentWeekNumber]: true,
         });
 
         console.log("docRef:", docRef); // For debugging
