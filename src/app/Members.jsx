@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js";
 
-function Members() {
+function Members(props) {
   const uploadTime = new Date().toLocaleString();
 
   const [selectedNames, setSelectedNames] = useState([]);
@@ -10,15 +10,15 @@ function Members() {
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
   // Fetch member names on component mount
-  useEffect(() => {
-    const fetchMembers = async () => {
-      const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
-      const names = membersSnapshot.docs.map((doc) => doc.id);
-      setMemberNames(names);
-    };
+  // useEffect(() => {
+  //   const fetchMembers = async () => {
+  //     const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
+  //     const names = membersSnapshot.docs.map((doc) => doc.id);
+  //     setMemberNames(names);
+  //   };
 
-    fetchMembers();
-  }, []);
+  //   fetchMembers();
+  // }, []);
 
   // Handle click on a member name
   const handleClick = (name) => {
@@ -85,7 +85,7 @@ function Members() {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col gap-2 w-full">
-        {memberNames.map((name, index) => (
+        {props.memberNames.map((name, index) => (
           <button
             key={index}
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
