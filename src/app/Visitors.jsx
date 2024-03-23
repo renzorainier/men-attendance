@@ -89,24 +89,35 @@ function Visitors() {
         Visitors:
       </h2>
 
-       {/* Recent Visitors Section */}
       <div className="flex flex-col gap-2 w-full">
-        <h3>Recent Visitors:</h3> {/* Heading */}
-        <ul>
+        <h3>Recent Visitors:</h3>
+        <div className="flex flex-col gap-2"> {/* Container for buttons */}
           {recentVisitors.map((visitor) => (
-            <li key={visitor.id}>{visitor.name}</li>
+            <button
+              key={visitor.id}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-lg sm:text-xl md:text-2xl"
+              onClick={() => handleVisitorClick(visitor.name)}
+            >
+              {visitor.name}
+            </button>
           ))}
-        </ul>
+        </div>
       </div>
 
       {/* Older Visitors Section */}
-      <div className="flex flex-col gap-2 w-full mt-4"> {/* Spacing */}
-        <h3>Older Visitors:</h3> {/* Heading */}
-        <ul>
+      <div className="flex flex-col gap-2 w-full mt-4">
+        <h3>Older Visitors:</h3>
+        <div className="flex flex-col gap-2"> {/* Container for buttons */}
           {olderVisitors.map((visitor) => (
-            <li key={visitor.id}>{visitor.name}</li>
+            <button
+              key={visitor.id}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-lg sm:text-xl md:text-2xl"
+              onClick={() => handleVisitorClick(visitor.name)}
+            >
+              {visitor.name}
+            </button>
           ))}
-        </ul>
+        </div>
       </div>
 
       <div className="flex gap-2 justify-center mt-4"> {/* Spacing */}
