@@ -1,158 +1,253 @@
 import React, { useState, useEffect } from "react";
-import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
-import { db } from "./firebase.js"; // Import your Firebase config
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./firebase.js";
 
-function Members() {
-  const uploadTime = new Date().toLocaleString();
+function Fetch() {
+  const [allDocuments, setAllDocuments] = useState([]);
+  const [yearData, setYearData] = useState({}); // State to hold data for the entire year
 
-  const [selectedNames, setSelectedNames] = useState([]);
-  const [memberNames, setMemberNames] = useState([]);
-  const [memberData, setMemberData] = useState([]); // For storing week data
-  const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
-
-  // Fetch member names and week data on component mount
   useEffect(() => {
-    const fetchMembers = async () => {
-      const membersSnapshot = await getDocs(collection(db, "memberRecords"));
-      const memberData = membersSnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMemberNames(memberData.map((member) => member.id)); // Store member names
-      setMemberData(memberData); // Store member data
+    const fetchAllDocuments = async () => {
+      try {
+        const documentsRef = collection(db, "memberRecords");
+        const querySnapshot = await getDocs(documentsRef);
+        setAllDocuments(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      } catch (error) {
+        console.error("Error fetching data from Firestore:", error);
+      }
     };
 
-    fetchMembers();
+    fetchAllDocuments();
   }, []);
 
-  // Handle click on a member name
-  const handleClick = (name) => {
-    const nameIndex = selectedNames.indexOf(name);
-    if (nameIndex === -1) {
-      setSelectedNames([...selectedNames, name]);
-    } else {
-      setSelectedNames([
-        ...selectedNames.slice(0, nameIndex),
-        ...selectedNames.slice(nameIndex + 1),
-      ]);
-    }
-  };
-
-  // Update Firebase
-  const updateFirebase = async () => {
-    try {
-      const membersSnapshot = await getDocs(collection(db, "memberRecords"));
-      const allMemberNames = membersSnapshot.docs.map((doc) => doc.id);
-
-      for (const name of allMemberNames) {
-        const docRef = doc(db, "memberRecords", name);
-        const timeField = currentWeekNumber + "t";
-
-        await updateDoc(docRef, {
-          [currentWeekNumber]: selectedNames.includes(name),
-          [timeField]: selectedNames.includes(name) ? uploadTime : "",
-        });
-      }
-
-      setSelectedNames([]);
-      console.log("Firebase documents updated successfully!");
-    } catch (error) {
-      console.error("Error updating Firebase documents: ", error);
-    }
-  };
-
-  // Week Number Calculation
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCurrentWeekNumber(getWeekNumber());
-    }, 60000); // Update every minute
+    if (allDocuments.length > 0) {
+      const currentYear = new Date().getFullYear();
+      const yearData = initializeYearData(currentYear);
+      populateYearData(yearData, allDocuments, currentYear);
+      setYearData(yearData);
+    }
+  }, [allDocuments]);
 
-    return () => clearInterval(intervalId);
-  }, []);
+  // Helper Functions
+  function initializeYearData(year) {
+    const months = {};
+    for (let month = 0; month < 12; month++) {
+      months[month] = createEmptyWeeks(new Date(year, month, 1), new Date(year, month + 1, 0));
+    }
+    return months;
+  }
+  function createEmptyWeeks(monthStart, monthEnd) {
+    const weeks = [];
+    let weekStart = new Date(monthStart.getTime());
 
-  function getWeekNumber() {
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
-    var week1 = new Date(date.getFullYear(), 0, 4);
-    return (
-      1 +
-      Math.round(
-        ((date.getTime() - week1.getTime()) / 86400000 -
-          3 +
-          ((week1.getDay() + 6) % 7)) /
-          7
-      )
-    );
+    while (weekStart.getMonth() === monthStart.getMonth()) {
+      weeks.push({
+        startDate: new Date(weekStart.getTime()),
+        endDate: new Date(weekStart.getTime()).setDate(weekStart.getDate() + 6),
+        weekNumber: getWeekNumber(weekStart),
+        members: []
+      });
+      weekStart.setDate(weekStart.getDate() + 7);
+    }
+
+    return weeks;
   }
 
+  function getWeekNumber(date) {
+    const oneJan = new Date(date.getFullYear(), 0, 1);
+    const daysSinceOneJan = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
+    return Math.ceil((date.getDay() + 1 + daysSinceOneJan) / 7);
+  }
+
+  function populateYearData(yearData, documents, year) {
+    documents.forEach(doc => {
+      const memberName = doc.id;
+      const attendanceData = doc;
+
+      for (const weekNumber in attendanceData) {
+        if (attendanceData[weekNumber] === true) {
+          const week = getWeekDetails(weekNumber, year);
+          const monthIndex = week.month;
+          const weekIndex = yearData[monthIndex].findIndex(w => w.weekNumber === week.weekNumber);
+
+          if (weekIndex !== -1) {
+            yearData[monthIndex][weekIndex].members.push({ id: memberName, name: memberName });
+          }
+        }
+      }
+    });
+  }
+
+  function getWeekDetails(weekNumber, year) {
+    const tempDate = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+    return { month: tempDate.getMonth(), weekNumber };
+  }
+
+  function getSundayOfWeek(weekStartDate) {
+    const sunday = new Date(weekStartDate.getTime());
+    sunday.setDate(sunday.getDate() - sunday.getDay()); // Get the Sunday of the week
+    return sunday;
+  }
   return (
-    <div className="flex flex-col items-center">
-      <div
-        className="w-full text-gray-700 bg-white p-5 border rounded-lg shadow-lg mx-auto"
-        style={{ maxWidth: "90%" }}>
-        <div className="flex flex-col gap-2 w-full">
-          {memberNames.map((name, index) => {
-            const member = memberData.find((m) => m.id === name);
+    <div className="container mx-auto p-8">
+      {Object.keys(yearData).map((monthIndex) => (
+        <div key={monthIndex}>
+          {/* Display Month Name */}
+          <h2 className="text-xl font-bold mb-4">
+            {new Date(0, monthIndex).toLocaleString('default', { month: 'long' })}
+          </h2>
 
-            return (
-              <button
-                key={index}
-                className={`bg-gray-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
-                    ${selectedNames.includes(name) ? "bg-gray-500" : ""}
-                    ${member && member[currentWeekNumber] ? "bg-green-500" : ""}
-                    text-lg sm:text-xl md:text-2xl`}
-                onClick={() => handleClick(name)}>
-                {name}
-              </button>
-            );
-          })}
+          {yearData[monthIndex].map((week, weekIndex) => (
+            <div className="bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg p-6 mb-6" key={weekIndex}>
+              <div className="flex items-center">
+                <h3 className="text-2xl font-bold text-white mr-4">
+                  {getSundayOfWeek(week.startDate).getDate()}
+                </h3>
 
-        </div>
-      </div>
+                <span className="bg-gray-200 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full">
+                  Week {week.weekNumber}
+                </span>
+              </div>
 
-      <div className="flex gap-2 pt-10 justify-center">
-        <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-          onClick={updateFirebase} // Attach the update function
-        >
-          Button to Upload to Firebase
-        </button>
-      </div>
-      {selectedNames.length > 0 && (
-            <>
-              <h3>Selected Names:</h3>
-              <ul>
-                {selectedNames.map((name, index) => (
-                  <li key={index}> {name} </li>
+              <ul className="list-disc list-inside text-white mt-4">
+                {week.members.map(member => (
+                  <li className="font-medium mb-2" key={member.id}>{member.name}</li>
                 ))}
               </ul>
-            </>
-          )}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
+
 }
 
-export default Members;
-
-//
-
-{
-  /* <div className="flex flex-col gap-2 w-full">
-{sortedMemberNames.map((name, index) => (
-  <button
-    key={index}
-    className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
-      ${selectedNames.includes(name) ? "bg-gray-500" : ""}
-      text-lg sm:text-xl md:text-2xl`} // Remove any margin classes
-    onClick={() => handleClick(name)}
-  >
-    {name}
-  </button>
-))}
+export default Fetch;
 
 
-</div>
-</div>
-<p>Current Week Number: {currentWeekNumber}</p> */
-}
+
+
+
+
+// import React, { useState, useEffect } from "react";
+// import { collection, getDocs } from "firebase/firestore";
+// import { db } from "./firebase.js";
+
+// function Fetch() {
+//   const [allDocuments, setAllDocuments] = useState([]);
+//   const [monthWeeks, setMonthWeeks] = useState([]);
+
+//   useEffect(() => {
+//     const fetchAllDocuments = async () => {
+//       try {
+//         const documentsRef = collection(db, "memberRecords");
+//         const querySnapshot = await getDocs(documentsRef);
+
+//         setAllDocuments(querySnapshot.docs.map(doc => ({
+//           id: doc.id,
+//           ...doc.data()
+//         })));
+//         console.log(data);
+//       } catch (error) {
+//         console.error("Error fetching data from Firestore:", error);
+//       }
+//     };
+
+//     fetchAllDocuments();
+//   }, []);
+
+//   useEffect(() => {
+//     if (allDocuments.length > 0) {
+//       const currentDate = new Date();
+//       const currentMonth = currentDate.getMonth();
+//       const currentYear = currentDate.getFullYear();
+
+//       const monthStart = new Date(currentYear, currentMonth, 1);
+//       const monthEnd = new Date(currentYear, currentMonth + 1, 0);
+
+//       const monthWeeks = createEmptyWeeks(monthStart, monthEnd);
+//       populateWeeksWithAttendance(monthWeeks, allDocuments, currentYear);
+
+//       console.log("Fetched Documents:", allDocuments);
+//       console.log("Processed Month Weeks:", monthWeeks);
+
+//       setMonthWeeks(monthWeeks);
+//     }
+//   }, [allDocuments]);
+
+//   // Helper Functions
+//   function createEmptyWeeks(monthStart, monthEnd) {
+//     const weeks = [];
+//     let weekStart = new Date(monthStart.getTime());
+
+//     while (weekStart.getMonth() === monthStart.getMonth()) {
+//       weeks.push({
+//         startDate: new Date(weekStart.getTime()),
+//         endDate: new Date(weekStart.getTime()).setDate(weekStart.getDate() + 6),
+//         weekNumber: getWeekNumber(weekStart),
+//         members: []
+//       });
+//       weekStart.setDate(weekStart.getDate() + 7);
+//     }
+
+//     return weeks;
+//   }
+
+//   function getWeekNumber(date) {
+//     const oneJan = new Date(date.getFullYear(), 0, 1);
+//     const daysSinceOneJan = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
+//     return Math.ceil((date.getDay() + 1 + daysSinceOneJan) / 7);
+//   }
+
+//   function populateWeeksWithAttendance(weeks, documents, year) {
+//     documents.forEach(doc => {
+//       const memberName = doc.id;
+//       const attendanceData = doc; // Access attendance data directly
+
+//       for (const weekNumber in attendanceData) {
+//         if (attendanceData[weekNumber] === true) {
+//           const weekIndex = weeks.findIndex(week => week.weekNumber === parseInt(weekNumber));
+
+//           if (weekIndex !== -1) {
+//             weeks[weekIndex].members.push({ id: memberName, name: memberName });
+//           }
+//         }
+//       }
+//     });
+//   }
+
+
+//   function getSundayOfWeek(weekStartDate) {
+//     const sunday = new Date(weekStartDate.getTime());
+//     sunday.setDate(sunday.getDate() - sunday.getDay()); // Get the Sunday of the week
+//     return sunday;
+//   }
+//   return (
+//     <div className="container mx-auto p-8">
+//    {monthWeeks.map((week, index) => (
+//         <div className="bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg p-6 mb-6" key={index}>
+//           <div className="flex items-center">
+
+//             <h3 className="text-2xl font-bold text-white mr-4">
+//               {getSundayOfWeek(week.startDate).getDate()}
+//             </h3>
+//             <span className="bg-gray-200 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full">
+//               {week.weekNumber}
+//             </span>
+//           </div>
+//           <ul className="list-disc list-inside text-white mt-4">
+//             {week.members.map(member => (
+//               <li className="font-medium mb-2" key={member.id}>{member.name}</li>
+//             ))}
+//           </ul>
+//         </div>
+//       ))}
+//     </div>
+//   );
+
+
+// }
+
+// export default Fetch;
