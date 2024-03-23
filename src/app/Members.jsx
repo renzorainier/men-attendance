@@ -6,10 +6,10 @@ function Members() {
   const uploadTime = new Date().toLocaleString();
 
   const [memberNames, setMemberNames] = useState([]);
-  const [memberData, setMemberData] = useState([]); // For storing week data
+  const [memberData, setMemberData] = useState([]);
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
-  // Fetch member names and week data on component mount
+  // Fetch data on component mount
   useEffect(() => {
     const fetchMembers = async () => {
       const membersSnapshot = await getDocs(collection(db, "memberRecords"));
@@ -26,10 +26,7 @@ function Members() {
 
   // Handle click on a member name
   const handleClick = (name) => {
-    // Find corresponding member data for the name
     const memberIndex = memberData.findIndex((m) => m.id === name);
-
-    // Toggle the current week field for the member
     const updatedMemberData = [...memberData];
     updatedMemberData[memberIndex] = {
       ...updatedMemberData[memberIndex],
@@ -51,13 +48,17 @@ function Members() {
         });
       }
 
+      // Find the selected names
+      const selectedNames = memberData.filter(member => member[currentWeekNumber]).map(member => member.id);
+
       console.log("Firebase documents updated successfully!");
+      console.log("Selected Names:", selectedNames);
     } catch (error) {
       console.error("Error updating Firebase documents: ", error);
     }
   };
 
-  // Week Number Calculation
+  // Week Number Calculation (same as before)
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentWeekNumber(getWeekNumber());
@@ -67,7 +68,7 @@ function Members() {
   }, []);
 
   function getWeekNumber() {
-    // (Same code as before for week number calculation)
+    // ... (same week number calculation code)
   }
 
   return (
@@ -88,22 +89,12 @@ function Members() {
             </button>
           );
         })}
-        {/* {selectedNames.length > 0 && (
-          <>
-            <h3>Selected Names:</h3>
-            <ul>
-              {selectedNames.map((name, index) => (
-                <li key={index}> {name} </li>
-              ))}
-            </ul>
-          </>
-        )} */}
       </div>
 
       <div className="flex gap-2 pt-10 justify-center">
         <button
           className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-          onClick={updateFirebase} // Attach the update function
+          onClick={updateFirebase}
         >
           Button to Upload to Firebase
         </button>
@@ -113,6 +104,7 @@ function Members() {
 }
 
 export default Members;
+
 
 //
 
