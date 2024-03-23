@@ -31,6 +31,15 @@ function Tab() {
           </Switch>
         </div>
       </div>
+<div>
+{state ? (
+            <div>
+              <Rank data={attendanceData} />
+            </div>
+          ) : ()
+}
+</div>
+
     </div>
   );
 }
