@@ -107,16 +107,7 @@ function Members() {
               </button>
             );
           })}
-          {selectedNames.length > 0 && (
-            <>
-              <h3>Selected Names:</h3>
-              <ul>
-                {selectedNames.map((name, index) => (
-                  <li key={index}> {name} </li>
-                ))}
-              </ul>
-            </>
-          )}
+
         </div>
       </div>
 
@@ -128,6 +119,16 @@ function Members() {
           Button to Upload to Firebase
         </button>
       </div>
+      {selectedNames.length > 0 && (
+            <>
+              <h3>Selected Names:</h3>
+              <ul>
+                {selectedNames.map((name, index) => (
+                  <li key={index}> {name} </li>
+                ))}
+              </ul>
+            </>
+          )}
     </div>
   );
 }
