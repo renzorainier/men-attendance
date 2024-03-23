@@ -95,7 +95,7 @@ function Members() {
           return (
             <button
               key={index}
-              className={`bg-gray-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
+              className={`bg-gray-500 text-white font-bold py-3 px-4 rounded-xl
                     ${selectedNames.includes(name) ? "bg-gray-500" : ""}
                     ${member && member[currentWeekNumber] ? "bg-green-500" : ""}
                     text-lg sm:text-xl md:text-2xl`}
