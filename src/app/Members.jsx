@@ -6,19 +6,10 @@ function Members(props) {
   const uploadTime = new Date().toLocaleString();
 
   const [selectedNames, setSelectedNames] = useState([]);
-  const [memberNames, setMemberNames] = useState([]);
+  // const [memberNames, setMemberNames] = useState([]);
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
-  // Fetch member names on component mount
-  // useEffect(() => {
-  //   const fetchMembers = async () => {
-  //     const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
-  //     const names = membersSnapshot.docs.map((doc) => doc.id);
-  //     setMemberNames(names);
-  //   };
 
-  //   fetchMembers();
-  // }, []);
 
   // Handle click on a member name
   const handleClick = (name) => {
@@ -120,6 +111,22 @@ function Members(props) {
 }
 
 export default Members;
+
+
+
+
+// Fetch member names on component mount
+  // useEffect(() => {
+  //   const fetchMembers = async () => {
+  //     const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
+  //     const names = membersSnapshot.docs.map((doc) => doc.id);
+  //     setMemberNames(names);
+  //   };
+
+  //   fetchMembers();
+  // }, []);
+
+
 
 //
 
