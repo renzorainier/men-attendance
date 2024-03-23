@@ -36,6 +36,8 @@ function Members() {
         ...selectedNames.slice(nameIndex + 1),
       ]);
     }
+
+    
   };
 
   // Update Firebase
