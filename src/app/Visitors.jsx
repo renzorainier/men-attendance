@@ -3,10 +3,14 @@ import { doc, setDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js"; // Assuming you have your Firebase setup
 
 function Visitors() {
-  const [visitors, setVisitors] = useState([]);
-  const [newVisitorName, setNewVisitorName] = useState("");
+  // State Variables
+  const [visitors, setVisitors] = useState([]); // Array to store fetched visitors
+  const [newVisitorName, setNewVisitorName] = useState(""); // Input field for new visitor
+  const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
 
-  // Fetch visitors on component mount
+  // --- Visitor Management ---
+
+  // Fetch existing visitors when the component loads
   useEffect(() => {
     const fetchVisitors = async () => {
       const visitorsSnapshot = await getDocs(collection(db, "visitors"));
@@ -14,16 +18,34 @@ function Visitors() {
       setVisitors(visitorList);
     };
 
-    fetchVisitors();
+    fetchVisitors(); // Call the function to fetch data
   }, []);
 
+  // Handle changes to the new visitor input field
   const handleInputChange = (event) => {
     setNewVisitorName(event.target.value);
   };
 
+  // Add a new visitor to Firestore
+  const addVisitor = async () => {
+    if (newVisitorName.trim() !== "") {
+      try {
+        // Create a Firestore document reference
+        const docRef = await setDoc(doc(db, "visitors", newVisitorName), {
+          name: newVisitorName,
+          [currentWeekNumber]: true, // Mark attendance for the current week
+        });
 
-  const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
-  // Get week number
+        // Update the local visitors list
+        setVisitors([...visitors, { id: docRef.id, name: newVisitorName }]);
+        setNewVisitorName("");
+        console.log("Visitor added with ID: ", docRef.id);
+      } catch (error) {
+        console.error("Error adding visitor: ", error);
+      }
+    }
+  };
+
   useEffect(() => {
     // Update the week number periodically (if needed)
     const intervalId = setInterval(() => {
@@ -41,26 +63,6 @@ function Visitors() {
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
   }
 
-  const addVisitor = async () => {
-    if (newVisitorName.trim() !== "") {
-      try {
-        const docRef = await setDoc(doc(db, "visitors", newVisitorName), {
-          [currentWeekNumber]: true,
-        });
-
-        console.log("docRef:", docRef); // For debugging
-
-        // Small delay for potential network/Firestore delays
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        setVisitors([...visitors, { id: docRef.id, name: newVisitorName }]);
-        setNewVisitorName("");
-        console.log("Visitor added with ID: ", docRef.id);
-      } catch (error) {
-        console.error("Error asdding visitor: ", error);
-      }
-    }
-  };
 
   return (
     <div className="flex flex-col items-center">
