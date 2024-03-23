@@ -21,11 +21,31 @@ function Visitors() {
     setNewVisitorName(event.target.value);
   };
 
+
+  const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
+  // Get week number
+  useEffect(() => {
+    // Update the week number periodically (if needed)
+    const intervalId = setInterval(() => {
+      setCurrentWeekNumber(getWeekNumber());
+    }, 60000); // Update every minute
+
+    return () => clearInterval(intervalId); // Cleanup on unmount
+  }, []);
+
+  function getWeekNumber() {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+  }
+
   const addVisitor = async () => {
     if (newVisitorName.trim() !== "") {
       try {
         const docRef = await setDoc(doc(db, "visitors", newVisitorName), {
-          name: newVisitorName,
+          [currentWeekNumber]: ,
         });
 
         console.log("docRef:", docRef); // For debugging
