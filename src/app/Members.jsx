@@ -67,9 +67,6 @@ function Members(props) {
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
-        Members:
-      </h2>
       <div className="flex flex-col gap-2 w-full"> {/* Container for Members */}
         {sortedMemberNames.map((name, index) => (
           <button
@@ -110,28 +107,3 @@ function Members(props) {
 
 export default Members;
 
-
-
-
-
-{/* <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl">
-Button 2
-</button> */}
-
-
-
-
-
-
-
-
-// {selectedNames.length > 0 && (
-//   <>
-//     <h3>Selected Names:</h3>
-//     <ul>
-//       {selectedNames.map((name, index) => (
-//         <li key={index}> {name} </li>
-//       ))}
-//     </ul>
-//   </>
-// )}
