@@ -150,27 +150,28 @@ function Visitors() {
         </div>
       </div>
 
-      <div className="flex gap-2 justify-center mt-4">
-        <input
-          type="text"
-          value={newVisitorName}
-          onChange={handleInputChange}
-          placeholder="Enter visitor name"
-          className="border border-gray-400 rounded p-2"
-        />
-        <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-          onClick={addVisitor}
-        >
-          Add Visitor
-        </button>
-        <button
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-          onClick={updateFirebase}
-        >
-          Button to Upload to Firebase
-        </button>
-      </div>
+      <div className="flex flex-col items-center gap-2 justify-center mt-6 bg-gray-100 border border-gray-300 rounded-md p-4">
+  <input
+    type="text"
+    value={newVisitorName}
+    onChange={handleInputChange}
+    placeholder="Enter visitor name"
+    className="border border-gray-400 rounded p-3 w-64"
+  />
+  <button
+    className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded mx-2"
+    onClick={addVisitor}
+  >
+    Add Visitor
+  </button>
+  <button
+    className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded mx-2"
+    onClick={updateFirebase}
+  >
+    Button to Upload to Firebase
+  </button>
+</div>
+
     </div>
   );
 }
