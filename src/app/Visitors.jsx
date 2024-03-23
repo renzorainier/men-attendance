@@ -4,22 +4,30 @@ import { db } from "./firebase.js"; // Assuming you have your Firebase setup
 
 function Visitors() {
   // State Variables
-  const [visitors, setVisitors] = useState([]); // Array to store fetched visitors
+  const [visitors, setVisitors] = useState([]); // Array for all fetched visitors
+  const [recentVisitors, setRecentVisitors] = useState([]); // Array for recent visitors
   const [newVisitorName, setNewVisitorName] = useState(""); // Input field for new visitor
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
-
-  // --- Visitor Management ---
 
   // Fetch existing visitors when the component loads
   useEffect(() => {
     const fetchVisitors = async () => {
       const visitorsSnapshot = await getDocs(collection(db, "visitors"));
       const visitorList = visitorsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      // Filter recent visitors directly when fetching
+      const recentWeeksThreshold = currentWeekNumber - 4;
+      const recentVisitors = visitorList.filter((visitor) => {
+        const highestWeek = Math.max(...Object.keys(visitor).filter(key => !isNaN(key)));
+        return highestWeek >= recentWeeksThreshold;
+      });
+
       setVisitors(visitorList);
+      setRecentVisitors(recentVisitors);
     };
 
-    fetchVisitors(); // Call the function to fetch data
-  }, []);
+    fetchVisitors();
+  }, [currentWeekNumber]);
 
   // Handle changes to the new visitor input field
   const handleInputChange = (event) => {
@@ -30,10 +38,9 @@ function Visitors() {
   const addVisitor = async () => {
     if (newVisitorName.trim() !== "") {
       try {
-        // Create a Firestore document reference
         const docRef = await setDoc(doc(db, "visitors", newVisitorName), {
           name: newVisitorName,
-          [currentWeekNumber]: true, // Mark attendance for the current week
+          [currentWeekNumber]: true,
         });
 
         // Update the local visitors list
@@ -46,13 +53,13 @@ function Visitors() {
     }
   };
 
+  // Week Number Calculation
   useEffect(() => {
-    // Update the week number periodically (if needed)
     const intervalId = setInterval(() => {
       setCurrentWeekNumber(getWeekNumber());
     }, 60000); // Update every minute
 
-    return () => clearInterval(intervalId); // Cleanup on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   function getWeekNumber() {
@@ -63,7 +70,7 @@ function Visitors() {
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
   }
 
-
+  // Rendering
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
@@ -72,11 +79,12 @@ function Visitors() {
 
       <div className="flex flex-col gap-2 w-full">
         <ul>
-          {visitors.map((visitor) => (
+          {recentVisitors.map((visitor) => (
             <li key={visitor.id}>{visitor.name}</li>
           ))}
         </ul>
       </div>
+
       <div className="flex gap-2 justify-center">
         <input
           type="text"
@@ -97,4 +105,3 @@ function Visitors() {
 }
 
 export default Visitors;
-
