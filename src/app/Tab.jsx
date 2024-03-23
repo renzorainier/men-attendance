@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Switch } from "@headlessui/react";
-import Fetch from "./Fetch"
+import Fetch from "./Fetch";
+import Visitors from "./Visitors";
 
 function Tab() {
-
   const [state, setState] = useState(false);
 
   return (
@@ -32,19 +32,17 @@ function Tab() {
           </Switch>
         </div>
       </div>
-        <div>
+      <div>
         {state ? (
-                    <div>
-
-                    </div>
-                  ) : (
-                    <div>
-
-                    </div>
-                  )
-        }
-        </div>
-
+          <div>
+            <Visitors />
+          </div>
+        ) : (
+          <div>
+            <Fetch />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

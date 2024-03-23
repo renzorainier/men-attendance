@@ -12,9 +12,9 @@ import Tab from "./Tab";
 function Main() {
   return (
     <div>
-      <Fetch />
+      {/* <Fetch />
       <Upload />
-      <Visitors/>
+      <Visitors/> */}
       <Tab/>
     </div>
   );
