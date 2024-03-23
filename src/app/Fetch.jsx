@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./firebase.js";
-import Buttons from './Buttons.jsx'; // Assuming ChildComponent is in the same directory
+import Members from './Members.jsx'; // Assuming ChildComponent is in the same directory
 
 function Fetch() {
   const [memberNames, setMemberNames] = useState([]);
@@ -30,7 +30,7 @@ function Fetch() {
   return (
     <div>
       {memberNames.length > 0 ? (
-        <Buttons memberNames={memberNames} />  // Pass data as prop
+        <Members memberNames={memberNames} />  // Pass data as prop
       ) : (
         <div>Loading names...</div>
       )}

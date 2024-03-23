@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js";
 
-function Buttons(props) {
+function Members(props) {
   const uploadTime = new Date().toLocaleString(); // Get the time of upload
 
   const [selectedNames, setSelectedNames] = useState([]);
@@ -70,7 +70,7 @@ function Buttons(props) {
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
         Members:
       </h2>
-      <div className="flex flex-col gap-2 w-full"> {/* Container for buttons */}
+      <div className="flex flex-col gap-2 w-full"> {/* Container for Members */}
         {sortedMemberNames.map((name, index) => (
           <button
             key={index}
@@ -108,7 +108,11 @@ function Buttons(props) {
   );
 }
 
-export default Buttons;
+export default Members;
+
+
+
+
 
 {/* <button className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl">
 Button 2
