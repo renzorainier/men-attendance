@@ -75,6 +75,13 @@ function Visitors() {
     return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
   }
 
+    // Handle click on a visitor name
+    const handleVisitorClick = (visitorName) => {
+      // Add your desired logic when a visitor name is clicked (e.g., display more info)
+      console.log("Visitor clicked:", visitorName);
+    };
+
+
   // Rendering
   return (
     <div className="flex flex-col items-center">
