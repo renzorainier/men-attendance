@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
+import { doc, updateDoc, getDocs, collection, setDoc } from "firebase/firestore";
 import { db } from "./firebase.js"; // Assuming you have your Firebase setup
 
 function Visitors() {
