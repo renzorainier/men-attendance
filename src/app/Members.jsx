@@ -89,16 +89,22 @@ function Members() {
   return (
     <div className="flex flex-col items-center">
       <div className="flex flex-col gap-2 w-full">
-        {memberNames.map((name, index) => (
-          <button
-            key={index}
-            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
-              ${selectedNames.includes(name) ? "bg-gray-500" : ""}
-              text-lg sm:text-xl md:text-2xl`}
-            onClick={() => handleClick(name)}>
-            {name}
-          </button>
-        ))}
+      {memberNames.map((name, index) => {
+          const member = memberData.find((m) => m.id === name);
+
+          return (
+            <button
+              key={index}
+              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
+                    ${selectedNames.includes(name) ? "bg-gray-500" : ""}
+                    ${member && member[currentWeekNumber] ? "bg-green-500" : ""}
+                    text-lg sm:text-xl md:text-2xl`}
+              onClick={() => handleClick(name)}
+            >
+              {name}
+            </button>
+          );
+        })}
         {selectedNames.length > 0 && (
           <>
             <h3>Selected Names:</h3>
