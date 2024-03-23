@@ -137,6 +137,25 @@ function Visitors() {
         </div>
       </div>
 
+
+
+      <div className="flex flex-col gap-2 w-full">
+        <h3>Older Visitors:</h3>
+        <div className="flex flex-col gap-2">
+          {olderVisitors.map((visitor) => (
+            <button
+              key={visitor.id}
+              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-lg sm:text-xl md:text-2xl
+                ${selectedVisitors.includes(visitor.name) ? "bg-gray-500" : ""}`}
+              onClick={() => handleVisitorClick(visitor.name)}
+            >
+              {visitor.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+
       {/* (Similar section for Older Visitors) */}
 
       {/* Input and Update Button */}
