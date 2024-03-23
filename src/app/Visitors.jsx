@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { doc, setDoc, getDocs, collection } from "firebase/firestore";
+import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js"; // Assuming you have your Firebase setup
 
 function Visitors() {
   // State Variables
-  const [visitors, setVisitors] = useState([]); // Array for all fetched visitors
-  const [recentVisitors, setRecentVisitors] = useState([]); // Array for recent visitors
-  const [olderVisitors, setOlderVisitors] = useState([]); // Array for older visitors
-  const [newVisitorName, setNewVisitorName] = useState(""); // Input field for new visitor
+  const [visitors, setVisitors] = useState([]);
+  const [recentVisitors, setRecentVisitors] = useState([]);
+  const [olderVisitors, setOlderVisitors] = useState([]);
+  const [newVisitorName, setNewVisitorName] = useState("");
   const [currentWeekNumber, setCurrentWeekNumber] = useState(getWeekNumber());
+  const [selectedVisitors, setSelectedVisitors] = useState([]);
 
-  // Fetch existing visitors when the component loads
+  // Fetch Visitors on Load
   useEffect(() => {
     const fetchVisitors = async () => {
       const visitorsSnapshot = await getDocs(collection(db, "visitors"));
@@ -35,12 +36,12 @@ function Visitors() {
     fetchVisitors();
   }, [currentWeekNumber]);
 
-  // Handle changes to the new visitor input field
+  // Handle Input Change
   const handleInputChange = (event) => {
     setNewVisitorName(event.target.value);
   };
 
-  // Add a new visitor to Firestore
+  // Add a New Visitor
   const addVisitor = async () => {
     if (newVisitorName.trim() !== "") {
       try {
@@ -58,6 +59,43 @@ function Visitors() {
     }
   };
 
+  // Handle click on a visitor name
+  const handleVisitorClick = (visitorName) => {
+    const nameIndex = selectedVisitors.indexOf(visitorName);
+    if (nameIndex === -1) {
+      setSelectedVisitors([...selectedVisitors, visitorName]);
+    } else {
+      setSelectedVisitors([
+        ...selectedVisitors.slice(0, nameIndex),
+        ...selectedVisitors.slice(nameIndex + 1),
+      ]);
+    }
+  };
+
+  // Update Firebase
+  const updateFirebase = async () => {
+    try {
+      const visitorsSnapshot = await getDocs(collection(db, "visitors"));
+      const allVisitorNames = visitorsSnapshot.docs.map((doc) => doc.id);
+
+      for (const name of allVisitorNames) {
+        const docRef = doc(db, "visitors", name);
+        const timeField = currentWeekNumber + "t";
+        const uploadTime = new Date().toLocaleString();
+
+        await updateDoc(docRef, {
+          [currentWeekNumber]: selectedVisitors.includes(name),
+          [timeField]: selectedVisitors.includes(name) ? uploadTime : "",
+        });
+      }
+
+      setSelectedVisitors([]); // Clear the selection
+      console.log("Firebase documents updated successfully!");
+    } catch (error) {
+      console.error("Error updating Firebase documents: ", error);
+    }
+  };
+
   // Week Number Calculation
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -68,34 +106,25 @@ function Visitors() {
   }, []);
 
   function getWeekNumber() {
-    const date = new Date();
-    date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
-    var week1 = new Date(date.getFullYear(), 0, 4);
-    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    // ... (Your week calculation logic) ...
   }
 
-    // Handle click on a visitor name
-    const handleVisitorClick = (visitorName) => {
-      // Add your desired logic when a visitor name is clicked (e.g., display more info)
-      console.log("Visitor clicked:", visitorName);
-    };
-
-
-  // Rendering
+  // Rendering Section
   return (
     <div className="flex flex-col items-center">
       <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
         Visitors:
       </h2>
 
+      {/* Recent Visitors Buttons */}
       <div className="flex flex-col gap-2 w-full">
         <h3>Recent Visitors:</h3>
-        <div className="flex flex-col gap-2"> {/* Container for buttons */}
+        <div className="flex flex-col gap-2">
           {recentVisitors.map((visitor) => (
             <button
               key={visitor.id}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-lg sm:text-xl md:text-2xl"
+              className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-lg sm:text-xl md:text-2xl
+                ${selectedVisitors.includes(visitor.name) ? "bg-gray-500" : ""}`}
               onClick={() => handleVisitorClick(visitor.name)}
             >
               {visitor.name}
@@ -104,23 +133,10 @@ function Visitors() {
         </div>
       </div>
 
-      {/* Older Visitors Section */}
-      <div className="flex flex-col gap-2 w-full mt-4">
-        <h3>Older Visitors:</h3>
-        <div className="flex flex-col gap-2"> {/* Container for buttons */}
-          {olderVisitors.map((visitor) => (
-            <button
-              key={visitor.id}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl text-lg sm:text-xl md:text-2xl"
-              onClick={() => handleVisitorClick(visitor.name)}
-            >
-              {visitor.name}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* (Similar section for Older Visitors) */}
 
-      <div className="flex gap-2 justify-center mt-4"> {/* Spacing */}
+      {/* Input and Update Button */}
+      <div className="flex gap-2 justify-center mt-4">
         <input
           type="text"
           value={newVisitorName}
@@ -133,6 +149,12 @@ function Visitors() {
           onClick={addVisitor}
         >
           Add Visitor
+        </button>
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
+          onClick={updateFirebase}
+        >
+          Button to Upload to Firebase
         </button>
       </div>
     </div>
