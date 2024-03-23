@@ -2,10 +2,23 @@ import React, { useState, useEffect } from "react"
 import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
 import { db } from "./firebase.js";
 
-function Members(props) {
+function Members() {
   const uploadTime = new Date().toLocaleString(); // Get the time of upload
 
   const [selectedNames, setSelectedNames] = useState([]);
+
+  const [memberNames, setMemberNames] = useState([]);
+
+  // Fetch member names from Firebase
+  useEffect(() => {
+    const fetchMembers = async () => {
+      const membersSnapshot = await getDocs(collection(db, "memberRecords")); // Adjust collection name if needed
+      const names = membersSnapshot.docs.map((doc) => doc.id);
+      setMemberNames(names);
+    };
+
+    fetchMembers();
+  }, []);
 
   const handleClick = (name) => {
     const nameIndex = selectedNames.indexOf(name);
