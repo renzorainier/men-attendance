@@ -57,7 +57,7 @@ function Members() {
     }
   };
 
-   // Week Number Calculation
+  // Week Number Calculation
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentWeekNumber(getWeekNumber());
@@ -69,29 +69,35 @@ function Members() {
   function getWeekNumber() {
     const date = new Date();
     date.setHours(0, 0, 0, 0);
-    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));
     var week1 = new Date(date.getFullYear(), 0, 4);
-    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    return (
+      1 +
+      Math.round(
+        ((date.getTime() - week1.getTime()) / 86400000 -
+          3 +
+          ((week1.getDay() + 6) % 7)) /
+          7
+      )
+    );
   }
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-2xl font-semibold bg-gray-100 p-5 rounded-md shadow-lg mb-4">
-        Members:
-      </h2>
-
-      <div className="flex flex-col gap-2 w-full"> {/* Container for Members */}
+      <div className="flex flex-col gap-2 w-full">
+        {" "}
+        {/* Container for Members */}
         {memberNames.map((name, index) => (
           <button
             key={index}
             className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl
               ${selectedNames.includes(name) ? "bg-gray-500" : ""}
               text-lg sm:text-xl md:text-2xl`}
-            onClick={() => handleClick(name)}
-          >
+            onClick={() => handleClick(name)}>
             {name}
           </button>
-        ))}{selectedNames.length > 0 && (
+        ))}
+        {selectedNames.length > 0 && (
           <>
             <h3>Selected Names:</h3>
             <ul>
@@ -100,35 +106,27 @@ function Members() {
               ))}
             </ul>
           </>
-        )} 
+        )}
+      </div>
 
-
-     </div>
-
-      {/* ... (Rest of your JSX: selected names display, update button, etc.) ... */}
-
+      <div className="flex gap-2 pt-10 justify-center">
+        <button
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
+          onClick={updateFirebase} // Attach the update function
+        >
+          Button to Upload to Firebase
+        </button>
+      </div>
     </div>
   );
 }
 
 export default Members;
 
-
-
-
-//  <div className="flex gap-2 justify-center">
-// <button
-// className="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl"
-// onClick={updateFirebase} // Attach the update function
-// >
-// Button to Upload to Firebase
-// </button>
-
-
-
 //
 
-{/* <div className="flex flex-col gap-2 w-full">
+{
+  /* <div className="flex flex-col gap-2 w-full">
 {sortedMemberNames.map((name, index) => (
   <button
     key={index}
@@ -144,4 +142,5 @@ export default Members;
 
 </div>
 </div>
-<p>Current Week Number: {currentWeekNumber}</p> */}
+<p>Current Week Number: {currentWeekNumber}</p> */
+}
