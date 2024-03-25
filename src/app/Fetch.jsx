@@ -1,11 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase.js";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 function Fetch() {
   const [allDocuments, setAllDocuments] = useState([]);
   const [monthWeeks, setMonthWeeks] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Initial value: current month
+
+  function getFirstSundayOfMonth(date) {
+    const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const offset = firstOfMonth.getDay(); // 0 for Sunday, 1 for Monday, etc.
+    return new Date(firstOfMonth.setDate(1 - offset));
+  }
 
   useEffect(() => {
     const fetchAllDocuments = async () => {
@@ -13,10 +22,12 @@ function Fetch() {
         const documentsRef = collection(db, "memberRecords");
         const querySnapshot = await getDocs(documentsRef);
 
-        setAllDocuments(querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        })));
+        setAllDocuments(
+          querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
         console.log(data);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
@@ -37,27 +48,30 @@ function Fetch() {
       const monthWeeks = createEmptyWeeks(monthStart, monthEnd);
       populateWeeksWithAttendance(monthWeeks, allDocuments, currentYear);
 
-      console.log("Fetched Documents:", allDocuments); // You likely don't need this line here anymore
-      console.log("Processed Month Weeks:", monthWeeks); // Or this one
-
       setMonthWeeks(monthWeeks);
     }
-  }, [allDocuments, selectedMonth]); // Include selectedMonth in the dependencies
+  }, [allDocuments, selectedMonth]);
 
   // Helper Functions
   function createEmptyWeeks(monthStart, monthEnd) {
     const weeks = [];
-    let weekStart = new Date(monthStart.getTime());
+    let weekStart = getFirstSundayOfMonth(monthStart);
 
-    console.log(weekStart)
+    while (weekStart <= monthEnd) {
+      if (
+        weekStart.getDay() === 0 &&
+        weekStart.getMonth() === monthStart.getMonth()
+      ) {
+        const weekEnd = new Date(weekStart.getTime());
+        weekEnd.setDate(weekStart.getDate() + 6);
 
-    while (weekStart.getMonth() === monthStart.getMonth()) {
-      weeks.push({
-        startDate: new Date(weekStart.getTime()),
-        endDate: new Date(weekStart.getTime()).setDate(weekStart.getDate() + 6),
-        weekNumber: getWeekNumber(weekStart),
-        members: []
-      });
+        weeks.push({
+          startDate: new Date(weekStart.getTime()),
+          endDate: weekEnd,
+          weekNumber: getWeekNumber(weekStart),
+          members: [],
+        });
+      }
 
       weekStart.setDate(weekStart.getDate() + 7);
     }
@@ -72,13 +86,15 @@ function Fetch() {
   }
 
   function populateWeeksWithAttendance(weeks, documents, year) {
-    documents.forEach(doc => {
+    documents.forEach((doc) => {
       const memberName = doc.id;
       const attendanceData = doc; // Access attendance data directly
 
       for (const weekNumber in attendanceData) {
         if (attendanceData[weekNumber] === true) {
-          const weekIndex = weeks.findIndex(week => week.weekNumber === parseInt(weekNumber));
+          const weekIndex = weeks.findIndex(
+            (week) => week.weekNumber === parseInt(weekNumber)
+          );
 
           if (weekIndex !== -1) {
             weeks[weekIndex].members.push({ id: memberName, name: memberName });
@@ -88,28 +104,63 @@ function Fetch() {
     });
   }
 
-
   function getSundayOfWeek(weekStartDate) {
     const sunday = new Date(weekStartDate.getTime());
     sunday.setDate(sunday.getDate() - sunday.getDay()); // Get the Sunday of the week
     return sunday;
   }
   return (
-    <div className="container mx-auto p-8">
-    <div className="mb-4"> {/* Container for the month selector */}
-        <select value={selectedMonth} onChange={(e) => setSelectedMonth(parseInt(e.target.value))}>
-          {Array.from({length: 12}, (_, i) => (
-            <option key={i} value={i}>
-              {new Date(0, i).toLocaleString('default', { month: 'long' })}
-            </option>
-          ))}
-        </select>
+    <div className="container mx-auto pt-5">
+      <div className="mb-4 ">
+        <Menu as="div" className="relative inline-block justify-center text-center">
+          <div>
+            <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
+              <h2 className="text-4xl font-bold">
+                {new Date(0, selectedMonth).toLocaleString("default", {
+                  month: "long",
+                })}
+              </h2>
+              <ChevronDownIcon
+                className="-mr-1 ml-2 h-10 w-10 text-violet-200 hover:text-violet-100"
+                aria-hidden="true"
+              />
+            </Menu.Button>
+          </div>
+
+          <Transition
+            as={Fragment}
+            enter="transition ease-out duration-200"
+            enterFrom="transform opacity-0 scale-95"
+            enterTo="transform opacity-100 scale-100"
+            leave="transition ease-in duration-75"
+            leaveFrom="transform opacity-100 scale-100"
+            leaveTo="transform opacity-0 scale-95">
+            <Menu.Items className="absolute mt-2  origin-top divide-y divide-gray-100 rounded-lg bg-gradient-to-b from-gray-100 to-white shadow-xl ring-1 ring-black/5 focus:outline-none  flex flex-col items-center">
+              {Array.from({ length: 12 }, (_, i) => (
+                <Menu.Item key={i}>
+                  {({ active }) => (
+                    <button
+                      className={`${
+                        active ? "bg-violet-500 text-white" : "text-gray-900"
+                      }  flex flex-col items-center group flex w-full items-center rounded-lg px-4 py-4 text-2xl font-semibold hover:bg-violet-100 transition-colors duration-200 `}
+                      onClick={() => setSelectedMonth(i)}>
+                      {new Date(0, i).toLocaleString("default", {
+                        month: "long",
+                      })}
+                    </button>
+                  )}
+                </Menu.Item>
+              ))}
+            </Menu.Items>
+          </Transition>
+        </Menu>
       </div>
 
-   {monthWeeks.map((week, index) => (
-        <div className="bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg p-6 mb-6" key={index}>
+      {monthWeeks.map((week, index) => (
+        <div
+          className="bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg p-6 mb-6"
+          key={index}>
           <div className="flex items-center">
-
             <h3 className="text-2xl font-bold text-white mr-4">
               {getSundayOfWeek(week.startDate).getDate()}
             </h3>
@@ -118,16 +169,16 @@ function Fetch() {
             </span>
           </div>
           <ul className="list-disc list-inside text-white mt-4">
-            {week.members.map(member => (
-              <li className="font-medium mb-2" key={member.id}>{member.name}</li>
+            {week.members.map((member) => (
+              <li className="font-medium mb-2" key={member.id}>
+                {member.name}
+              </li>
             ))}
           </ul>
         </div>
       ))}
     </div>
   );
-
-
 }
 
 export default Fetch;
