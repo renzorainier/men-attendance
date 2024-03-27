@@ -28,6 +28,7 @@ function Fetch() {
             ...doc.data(),
           }))
         );
+        console.log(data);
       } catch (error) {
         console.error("Error fetching data from Firestore:", error);
       }
@@ -96,7 +97,7 @@ function Fetch() {
           );
 
           if (weekIndex !== -1) {
-            weeks[weekIndex].members.push(memberName);
+            weeks[weekIndex].members.push({ id: memberName, name: memberName });
           }
         }
       }
@@ -108,55 +109,10 @@ function Fetch() {
     sunday.setDate(sunday.getDate() - sunday.getDay()); // Get the Sunday of the week
     return sunday;
   }
-
-  // Render function for displaying table
-  const renderTable = () => {
-    return (
-      <div className="mt-8 overflow-x-auto shadow-lg rounded-lg">
-        <table className="table-auto w-full min-w-max border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-6 py-4 text-left text-gray-800">Members</th>
-              {monthWeeks.map((week) => (
-                <th key={week.weekNumber} className="px-6 py-4 text-center text-gray-800">
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold mt-1">
-                      {getSundayOfWeek(week.startDate).getDate()}
-                    </span>
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {allDocuments.map((member, index) => (
-              <tr key={member.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                <td className="border px-6 py-3 font-medium">{member.id}</td>
-                {monthWeeks.map((week) => (
-                  <td
-                    key={week.weekNumber}
-                    className={`border px-6 py-3 text-center ${week.members.includes(member.id) ? 'bg-green-500 text-white' : ''}`}
-                  >
-                    {member.attendance?.[week.weekNumber] && (
-                      <span className="text-lg">✓</span>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-
-  };
-
   return (
     <div className="container mx-auto pt-5">
       <div className="mb-4 ">
-        <Menu
-          as="div"
-          className="relative inline-block justify-center text-center">
+        <Menu as="div" className="relative inline-block justify-center text-center">
           <div>
             <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
               <h2 className="text-4xl font-bold">
@@ -200,8 +156,27 @@ function Fetch() {
         </Menu>
       </div>
 
-      {/* Render the table */}
-      {renderTable()}
+      {monthWeeks.map((week, index) => (
+        <div
+          className="bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl shadow-lg p-6 mb-6"
+          key={index}>
+          <div className="flex items-center">
+          <h3 className="text-2xl font-bold text-white mr-4">
+              {getSundayOfWeek(week.startDate).getDate()}
+            </h3>
+            <span className="bg-gray-200 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full">
+              {week.weekNumber}
+            </span>
+          </div>
+          <ul className="list-disc list-inside text-white mt-4">
+            {week.members.map((member) => (
+              <li className="font-medium mb-2" key={member.id}>
+                {member.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
