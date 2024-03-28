@@ -139,7 +139,7 @@ function Fetch() {
               <tr
                 key={member.id}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
-                <td className="px-6 py-3 font-medium text-center">
+                <td className="px-3 py-3 text-center">
                   {member.id}
                 </td>
                 {monthWeeks.map((week) => (
