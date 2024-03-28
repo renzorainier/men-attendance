@@ -139,9 +139,7 @@ function Fetch() {
               <tr
                 key={member.id}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
-                <td className="px-3 py-3 text-center">
-                  {member.id}
-                </td>
+                <td className="px-3 py-3 text-center">{member.id}</td>
                 {monthWeeks.map((week) => (
                   <td>
                     <div
@@ -165,7 +163,7 @@ function Fetch() {
   };
 
   return (
-    <div>
+    <div className= "grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div className="container mx-auto pt-5">
         <div className="mb-4 ">
           <Menu
@@ -217,10 +215,12 @@ function Fetch() {
         {/* Render the table */}
         {renderTable()}
       </div>
-      <FetchVisitors
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-      />
+      <div>
+        <FetchVisitors
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+        />
+      </div>
     </div>
   );
 }
