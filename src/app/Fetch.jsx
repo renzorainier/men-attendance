@@ -114,8 +114,8 @@ function Fetch() {
   const renderTable = () => {
     return (
       <div className="mt-8 overflow-x-auto shadow-lg border rounded-lg p-5">
-        <table className="table-auto rounded-lg  w-full min-w-max ">
-          <thead className = "rounded-t-lg">
+        <table className="table-auto  w-full min-w-max ">
+          <thead>
             <tr className="bg-gray-100 ">
               <th className="px-6 py-4 text-center text-gray-800 ">Members</th>
               {monthWeeks.map((week) => (
