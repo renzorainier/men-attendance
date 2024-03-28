@@ -112,13 +112,6 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
 
 
   const renderTable = () => {
-    // Filter members who have no present record for the selected month
-    const filteredMembers = allDocuments.filter((member) =>
-      monthWeeks.some((week) =>
-        week.members.includes(member.id) && member.attendance?.[week.weekNumber]
-      )
-    );
-
     return (
       <div className="mt-8 overflow-x-auto shadow-lg rounded-lg">
         <table className="table-auto w-full min-w-max border-collapse">
@@ -137,21 +130,25 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
             </tr>
           </thead>
           <tbody>
-            {filteredMembers.map((member, index) => (
-              <tr key={member.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                <td className="border px-6 py-3 font-medium">{member.id}</td>
-                {monthWeeks.map((week) => (
-                  <td
-                    key={week.weekNumber}
-                    className={`border px-6 py-3 text-center ${week.members.includes(member.id) ? 'bg-green-500 text-white' : ''}`}
-                  >
-                    {member.attendance?.[week.weekNumber] && (
-                      <span className="text-lg">✓</span>
-                    )}
-                  </td>
-                ))}
-              </tr>
-            ))}
+            {allDocuments
+              .filter((member) =>
+                monthWeeks.some((week) => week.members.includes(member.id))
+              )
+              .map((member, index) => (
+                <tr key={member.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
+                  <td className="border px-6 py-3 font-medium">{member.id}</td>
+                  {monthWeeks.map((week) => (
+                    <td
+                      key={week.weekNumber}
+                      className={`border px-6 py-3 text-center ${week.members.includes(member.id) ? 'bg-green-500 text-white' : ''}`}
+                    >
+                      {member.attendance?.[week.weekNumber] && (
+                        <span className="text-lg">✓</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
@@ -160,8 +157,7 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
 
 
   return (
-    <div>
-      {/* Render the table */}
+    <div className="container mx-auto pt-5">
       {renderTable()}
     </div>
   );

@@ -117,16 +117,19 @@ function Fetch() {
         <table className="table-auto w-full min-w-max border-collapse">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-6 py-4 text-left text-gray-800">Members</th>
+              <th className="px-6 py-4 text-center text-gray-800">Members</th>
               {monthWeeks.map((week) => (
                 <th
                   key={week.weekNumber}
                   className="px-6 py-4 text-center text-gray-800">
                   <div className="flex flex-col items-center">
-            <span className="text-2xl font-bold mt-1">
-              {getSundayOfWeek(week.startDate).getDate().toString().padStart(2, '0')}
-            </span>
-            </div>
+                    <span className="text-2xl font-bold mt-1">
+                      {getSundayOfWeek(week.startDate)
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}
+                    </span>
+                  </div>
                 </th>
               ))}
             </tr>
@@ -136,7 +139,7 @@ function Fetch() {
               <tr
                 key={member.id}
                 className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-                <td className="border px-6 py-3 font-medium">{member.id}</td>
+                <td className="border px-6 py-3 font-medium text-center">{member.id}</td>
                 {monthWeeks.map((week) => (
                   <td
                     key={week.weekNumber}
