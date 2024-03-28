@@ -146,7 +146,7 @@ function Fetch() {
                   <td>
                     <div
                       key={week.weekNumber}
-                      className={` px-6 py-4 rounded-lg text-center ${
+                      className={` px-6 py-4 m-1 rounded-lg text-center ${
                         week.members.includes(member.id)
                           ? "bg-green-500"
                           : "bg-gray-200"
