@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-// import Fetch from "./Fetch";
-import Fetch from "./MemberApp/Fetch";
+import Fetch from "./Fetch";
+// import Fetch from "./MemberApp/Fetch";
 // import "./globals.css"
 function Main() {
   return (
