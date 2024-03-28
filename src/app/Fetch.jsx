@@ -123,7 +123,7 @@ function Fetch() {
                   key={week.weekNumber}
                   className="px-6 py-4 text-center text-gray-800">
                   <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold mt-1">
+                    <span className="text-2xl font-bold">
                       {getSundayOfWeek(week.startDate)
                         .getDate()
                         .toString()
