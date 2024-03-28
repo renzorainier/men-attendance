@@ -138,7 +138,7 @@ function Fetch() {
             {allDocuments.map((member, index) => (
               <tr
                 key={member.id}
-                className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"}`}>
                 <td className="px-6 py-3 font-medium text-center">
                   {member.id}
                 </td>
