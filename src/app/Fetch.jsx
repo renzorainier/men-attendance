@@ -161,6 +161,7 @@ function Fetch() {
       </div>
     );
     const renderMenu = () => {
+      return (
       <div className="container mx-auto pt-5">
         <div className="mb-4 ">
           <Menu
@@ -208,12 +209,16 @@ function Fetch() {
             </Transition>
           </Menu>
         </div>
-      </div>;
+      </div>
+      );
     };
   };
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+      {renderMenu()}
+      </div>
       <div>{renderTable()}</div>
 
       <div>
