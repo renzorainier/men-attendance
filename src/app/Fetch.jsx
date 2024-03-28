@@ -113,11 +113,11 @@ function Fetch() {
   // Render function for displaying table
   const renderTable = () => {
     return (
-      <div className="mt-8 overflow-x-auto shadow-lg rounded-lg">
+      <div className="mt-8 overflow-x-auto shadow-lg rounded-lg p-5">
         <table className="table-auto w-full min-w-max border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="px-6 py-4 text-center text-gray-800">Members</th>
+          <thead className =" rounded-lg ">
+            <tr className="bg-gray-100  rounded-lg ">
+              <th className="px-6 py-4 text-center text-gray-800 ">Members</th>
               {monthWeeks.map((week) => (
                 <th
                   key={week.weekNumber}
@@ -139,15 +139,18 @@ function Fetch() {
               <tr
                 key={member.id}
                 className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-                <td className="border px-6 py-3 font-medium text-center">{member.id}</td>
+                <td className="px-6 py-3 font-medium text-center">
+                  {member.id}
+                </td>
                 {monthWeeks.map((week) => (
-                  <td
-                    key={week.weekNumber}
-                    className={`border px-6 py-3 text-center ${
-                      week.members.includes(member.id)
-                        ? "bg-green-500 text-white"
-                        : ""
-                    }`}>
+                  <td>
+                    <div
+                      key={week.weekNumber}
+                      className={` px-6 py-4 rounded-lg text-center ${
+                        week.members.includes(member.id)
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}></div>
                     {member.attendance?.[week.weekNumber] && (
                       <span className="text-lg">✓</span>
                     )}
@@ -159,7 +162,7 @@ function Fetch() {
         </table>
       </div>
     );
-  };
+  };ss
 
   return (
     <div>
