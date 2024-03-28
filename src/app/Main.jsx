@@ -9,7 +9,7 @@ import FetchVisitors from "./FetchVisitors";
 function Main() {
   return (
     <div>
-      <Fetch />
+      {/* <Fetch /> */}
     </div>
   );
 }
