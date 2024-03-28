@@ -113,16 +113,21 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
 
   const renderTable = () => {
     return (
-      <div className="mt-8 overflow-x-auto shadow-lg rounded-lg">
-        <table className="table-auto w-full min-w-max border-collapse">
+      <div className="mt-8 overflow-x-auto shadow-lg border rounded-lg p-5">
+        <table className="table-auto  w-full min-w-max ">
           <thead>
-            <tr className="bg-gray-100">
-              <th className="px-6 py-4 text-left text-gray-800">Visitors</th>
+            <tr className="bg-gray-100 ">
+              <th className="px-6 py-4 text-center text-gray-800 ">Visitors</th>
               {monthWeeks.map((week) => (
-                <th key={week.weekNumber} className="px-6 py-4 text-center text-gray-800">
+                <th
+                  key={week.weekNumber}
+                  className="px-6 py-4 text-center text-gray-800">
                   <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold mt-1">
-                      {getSundayOfWeek(week.startDate).getDate()}
+                    <span className="text-2xl font-bold">
+                      {getSundayOfWeek(week.startDate)
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}
                     </span>
                   </div>
                 </th>
@@ -130,25 +135,29 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
             </tr>
           </thead>
           <tbody>
-            {allDocuments
-              .filter((member) =>
-                monthWeeks.some((week) => week.members.includes(member.id))
-              )
-              .map((member, index) => (
-                <tr key={member.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}>
-                  <td className="border px-6 py-3 font-medium">{member.id}</td>
-                  {monthWeeks.map((week) => (
-                    <td
+            {allDocuments.map((member, index) => (
+              <tr
+                key={member.id}
+                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
+                <td className="px-3 py-3 text-center">
+                  {member.id}
+                </td>
+                {monthWeeks.map((week) => (
+                  <td>
+                    <div
                       key={week.weekNumber}
-                      className={`border px-6 py-3 text-center ${week.members.includes(member.id) ? 'bg-green-500 text-white' : ''}`}
-                    >
-                      {member.attendance?.[week.weekNumber] && (
-                        <span className="text-lg">✓</span>
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+                      className={` px-6 py-4 m-1 rounded-lg text-center ${
+                        week.members.includes(member.id)
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}></div>
+                    {member.attendance?.[week.weekNumber] && (
+                      <span className="text-lg">✓</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
