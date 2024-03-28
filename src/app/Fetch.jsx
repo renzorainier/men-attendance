@@ -115,9 +115,9 @@ function Fetch() {
     return (
       <div className="mt-8 overflow-x-auto shadow-lg rounded-lg p-5">
         <table className="table-auto w-full min-w-max border-collapse">
-          <thead className =" rounded-lg ">
+          <thead>
             <tr className="bg-gray-100  rounded-lg ">
-              <th className="px-6 py-4 text-center text-gray-800 ">Members</th>
+              <th className="px-6 py-4 text-center rounded-lg text-gray-800 ">Members</th>
               {monthWeeks.map((week) => (
                 <th
                   key={week.weekNumber}
@@ -162,7 +162,7 @@ function Fetch() {
         </table>
       </div>
     );
-  };ss
+  };
 
   return (
     <div>
