@@ -113,11 +113,11 @@ function Fetch() {
   // Render function for displaying table
   const renderTable = () => {
     return (
-      <div className="mt-8 overflow-x-auto shadow-lg rounded-lg p-5">
-        <table className="table-auto w-full min-w-max border-collapse">
+      <div className="mt-8 overflow-x-auto shadow-lg rounded-lg p-5 bg-red-500">
+        <table className="table-auto rounded-lg w-full min-w-max ">
           <thead>
-            <tr className="bg-gray-100  rounded-lg ">
-              <th className="px-6 py-4 text-center rounded-lg text-gray-800 ">Members</th>
+            <tr className="bg-gray-100 ">
+              <th className="px-6 py-4 text-center text-gray-800 ">Members</th>
               {monthWeeks.map((week) => (
                 <th
                   key={week.weekNumber}
@@ -138,7 +138,7 @@ function Fetch() {
             {allDocuments.map((member, index) => (
               <tr
                 key={member.id}
-                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"}`}>
+                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
                 <td className="px-6 py-3 font-medium text-center">
                   {member.id}
                 </td>
