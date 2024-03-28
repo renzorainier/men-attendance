@@ -9,6 +9,10 @@ function Fetch({ setSelectedMonth, setAllDocuments, selectedMonth }) {
         const documentsRef = collection(db, "memberRecords");
         const querySnapshot = await getDocs(documentsRef);
 
+        console.log(querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })));
         setAllDocuments(
           querySnapshot.docs.map((doc) => ({
             id: doc.id,
