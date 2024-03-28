@@ -113,7 +113,7 @@ function Fetch() {
   // Render function for displaying table
   const renderTable = () => {
     return (
-      <div className="mt-8 overflow-x-auto shadow-lg rounded-l p-5">
+      <div className="mt-8 overflow-x-auto shadow-lg border rounded-lg p-5">
         <table className="table-auto rounded-lg  w-full min-w-max ">
           <thead>
             <tr className="bg-gray-100 ">
