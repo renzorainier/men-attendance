@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase.js";
-import { Menu, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import FetchVisitors from "./FetchVisitors";
-import Chart from "./Chart";
-import MemberList from "./MemberList";
 
-function Fetch() {
+
+function FetchVisitors({ selectedMonth, setSelectedMonth }) {
   const [allDocuments, setAllDocuments] = useState([]);
   const [monthWeeks, setMonthWeeks] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth()); // Initial value: current month
+
 
   function getFirstSundayOfMonth(date) {
     const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -20,9 +15,9 @@ function Fetch() {
   }
 
   useEffect(() => {
-    const fetchAllDocuments = async () => {
+    const FetchVisitorsAllDocuments = async () => {
       try {
-        const documentsRef = collection(db, "memberRecords");
+        const documentsRef = collection(db, "visitors");
         const querySnapshot = await getDocs(documentsRef);
 
         setAllDocuments(
@@ -32,11 +27,11 @@ function Fetch() {
           }))
         );
       } catch (error) {
-        console.error("Error fetching data from Firestore:", error);
+        console.error("Error FetchVisitorsing data from Firestore:", error);
       }
     };
 
-    fetchAllDocuments();
+    FetchVisitorsAllDocuments();
   }, []);
 
   useEffect(() => {
@@ -112,71 +107,67 @@ function Fetch() {
     return sunday;
   }
 
-  // Render function for displaying table
 
-  const renderMenu = () => {
+
+  const renderTable = () => {
     return (
-      <div className="container mx-auto pt-5">
-        <div className="mb-4 ">
-          <Menu
-            as="div"
-            className="relative inline-block justify-center text-center">
-            <div>
-              <Menu.Button className="inline-flex w-full justify-center rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white hover:bg-black/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75">
-                <h2 className="text-4xl font-bold">
-                  {new Date(0, selectedMonth).toLocaleString("default", {
-                    month: "long",
-                  })}
-                </h2>
-                <ChevronDownIcon
-                  className="-mr-1 ml-2 h-10 w-10"
-                  aria-hidden="true"
-                />
-              </Menu.Button>
-            </div>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-200"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95">
-              <Menu.Items className="absolute mt-2  origin-top divide-y divide-gray-100 rounded-lg bg-gradient-to-b from-gray-100 to-white shadow-xl ring-1 ring-black/5 focus:outline-none  flex flex-col items-center">
-                {Array.from({ length: 12 }, (_, i) => (
-                  <Menu.Item key={i}>
-                    {({ active }) => (
-                      <button
-                        className={`${
-                          active ? "bg-blue-500 text-white" : "text-gray-900"
-                        }  flex flex-col items-center group flex w-full items-center rounded-lg px-4 py-4 text-2xl font-semibold hover:bg-blue-100-100 transition-colors duration-200 `}
-                        onClick={() => setSelectedMonth(i)}>
-                        {new Date(0, i).toLocaleString("default", {
-                          month: "long",
-                        })}
-                      </button>
+      <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+        <table className="table-auto  w-full min-w-max ">
+          <thead>
+            <tr className="bg-gray-100 ">
+              <th className="px-6 py-4 text-center text-gray-800 ">Visitors</th>
+              {monthWeeks.map((week) => (
+                <th
+                  key={week.weekNumber}
+                  className="px-6 py-4 text-center text-gray-800">
+                  <div className="flex flex-col items-center">
+                    <span className="text-2xl font-bold">
+                      {getSundayOfWeek(week.startDate)
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}
+                    </span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {allDocuments.map((member, index) => (
+              <tr
+                key={member.id}
+                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
+                <td className="px-3 py-3 text-center">
+                  {member.id}
+                </td>
+                {monthWeeks.map((week) => (
+                  <td>
+                    <div
+                      key={week.weekNumber}
+                      className={` px-6 py-4 m-1 rounded-lg text-center ${
+                        week.members.includes(member.id)
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}></div>
+                    {member.attendance?.[week.weekNumber] && (
+                      <span className="text-lg">✓</span>
                     )}
-                  </Menu.Item>
+                  </td>
                 ))}
-              </Menu.Items>
-            </Transition>
-          </Menu>
-        </div>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     );
   };
 
+
   return (
-    <div>
-      {renderMenu()}
-      <MemberList
-        allDocuments={allDocuments}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-      />
+    <div className="container mx-auto">
+      {renderTable()}
     </div>
   );
 }
 
-export default Fetch;
+export default FetchVisitors;

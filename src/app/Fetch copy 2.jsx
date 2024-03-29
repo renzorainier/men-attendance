@@ -5,8 +5,9 @@ import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import FetchVisitors from "./FetchVisitors";
-import Chart from "./Chart";
+import Chart from "./Chart"
 import MemberList from "./MemberList";
+
 
 function Fetch() {
   const [allDocuments, setAllDocuments] = useState([]);
@@ -113,6 +114,58 @@ function Fetch() {
   }
 
   // Render function for displaying table
+  const renderTable = () => {
+    return (
+      <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+        <table className="table-auto  w-full min-w-max ">
+          <thead>
+            <tr className="bg-gray-100 ">
+              <th className="px-6 py-4 text-center text-2xl text-gray-800 ">
+                Members
+              </th>
+              {monthWeeks.map((week) => (
+                <th
+                  key={week.weekNumber}
+                  className="px-6 py-4 text-center text-gray-800">
+                  <div className="flex flex-col items-center">
+                    <span className="text-2xl font-bold">
+                      {getSundayOfWeek(week.startDate)
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}
+                    </span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {allDocuments.map((member, index) => (
+              <tr
+                key={member.id}
+                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
+                <td className="px-3 py-3 text-center">{member.id}</td>
+                {monthWeeks.map((week) => (
+                  <td>
+                    <div
+                      key={week.weekNumber}
+                      className={` px-6 py-4 m-1 rounded-lg text-center ${
+                        week.members.includes(member.id)
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}></div>
+                    {member.attendance?.[week.weekNumber] && (
+                      <span className="text-lg">✓</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
 
   const renderMenu = () => {
     return (
@@ -166,15 +219,46 @@ function Fetch() {
       </div>
     );
   };
+  // const chartData = {
+  //   labels: monthWeeks.map(
+  //     (week) =>
+  //       getSundayOfWeek(week.startDate).toLocaleDateString("default", {
+  //         month: "short",
+  //         day: "numeric",
+  //       })
+  //   ),
+  //   datasets: [
+  //     {
+  //       label: "Attendance",
+  //       data: monthWeeks.map((week) => week.members.length),
+  //       borderColor: "#42A5F5",
+  //       backgroundColor: "#42A5F5",
+  //       pointBorderColor: "#42A5F5",
+  //       pointBackgroundColor: "#42A5F5",
+  //       lineTension: 0.4,
+  //       borderWidth: 10,
+  //     },
+  //   ],
+  // };
+
 
   return (
     <div>
       {renderMenu()}
-      <MemberList
-        allDocuments={allDocuments}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-      />
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div>{renderTable()}</div>
+
+        <div>
+          <FetchVisitors
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <Chart monthWeeks={monthWeeks} />
+      </div>
     </div>
   );
 }

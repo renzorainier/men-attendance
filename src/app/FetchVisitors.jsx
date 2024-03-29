@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "./firebase.js";
-import { Menu, Transition } from "@headlessui/react";
-import { Fragment } from "react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
-function FetchVisitors({ selectedMonth, setSelectedMonth }) {
+function FetchVisitors({
+  selectedMonth,
+  setSelectedMonth,
+  vMonthWeeks,
+  vSetMonthWeeks,
+}) {
   const [allDocuments, setAllDocuments] = useState([]);
-  const [monthWeeks, setMonthWeeks] = useState([]);
-
 
   function getFirstSundayOfMonth(date) {
     const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -44,10 +44,10 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
       const monthStart = new Date(currentYear, selectedMonth, 1);
       const monthEnd = new Date(currentYear, selectedMonth + 1, 0);
 
-      const monthWeeks = createEmptyWeeks(monthStart, monthEnd);
-      populateWeeksWithAttendance(monthWeeks, allDocuments, currentYear);
+      const vMonthWeeks = createEmptyWeeks(monthStart, monthEnd);
+      populateWeeksWithAttendance(vMonthWeeks, allDocuments, currentYear);
 
-      setMonthWeeks(monthWeeks);
+      vSetMonthWeeks(vMonthWeeks);
     }
   }, [allDocuments, selectedMonth]);
 
@@ -109,67 +109,66 @@ function FetchVisitors({ selectedMonth, setSelectedMonth }) {
     return sunday;
   }
 
-
-
   const renderTable = () => {
-    return (
-      <div className="mt-8 overflow-x-auto shadow-lg border rounded-lg p-5">
-        <table className="table-auto  w-full min-w-max ">
-          <thead>
-            <tr className="bg-gray-100 ">
-              <th className="px-6 py-4 text-center text-gray-800 ">Visitors</th>
-              {monthWeeks.map((week) => (
-                <th
-                  key={week.weekNumber}
-                  className="px-6 py-4 text-center text-gray-800">
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold">
-                      {getSundayOfWeek(week.startDate)
-                        .getDate()
-                        .toString()
-                        .padStart(2, "0")}
-                    </span>
-                  </div>
+    if (tableData.length === 0) {
+      return <div className="no-data-message">No visitors this month</div>;
+    } else {
+      return (
+        <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+          <table className="table-auto w-full min-w-max ">
+            <thead>
+              <tr className="bg-gray-100 ">
+                <th className="px-6 py-4 text-center text-gray-800 ">
+                  Visitors
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {allDocuments.map((member, index) => (
-              <tr
-                key={member.id}
-                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
-                <td className="px-3 py-3 text-center">
-                  {member.id}
-                </td>
-                {monthWeeks.map((week) => (
-                  <td>
-                    <div
-                      key={week.weekNumber}
-                      className={` px-6 py-4 m-1 rounded-lg text-center ${
-                        week.members.includes(member.id)
-                          ? "bg-green-500"
-                          : "bg-gray-200"
-                      }`}></div>
-                    {member.attendance?.[week.weekNumber] && (
-                      <span className="text-lg">✓</span>
-                    )}
-                  </td>
+                {vMonthWeeks.map((week) => (
+                  <th
+                    key={week.weekNumber}
+                    className="px-6 py-4 text-center text-gray-800">
+                    <div className="flex flex-col items-center">
+                      <span className="text-2xl font-bold">
+                        {getSundayOfWeek(week.startDate)
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0")}
+                      </span>
+                    </div>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
+            </thead>
+            <tbody>
+              {allDocuments.map((member, index) => (
+                <tr
+                  key={member.id}
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"
+                  }`}>
+                  <td className="px-3 py-3 text-center">{member.id}</td>
+                  {vMonthWeeks.map((week) => (
+                    <td>
+                      <div
+                        key={week.weekNumber}
+                        className={` px-6 py-4 m-1 rounded-lg text-center ${
+                          week.members.includes(member.id)
+                            ? "bg-green-500"
+                            : "bg-gray-200"
+                        }`}></div>
+                      {member.attendance?.[week.weekNumber] && (
+                        <span className="text-lg">✓</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>    
+          </table>
+        </div>
+      );
+    }
   };
 
-
-  return (
-    <div className="container mx-auto pt-5">
-      {renderTable()}
-    </div>
-  );
+  return <div>{renderTable()}</div>;
 }
 
 export default FetchVisitors;
