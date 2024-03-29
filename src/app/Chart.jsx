@@ -1,6 +1,7 @@
 import React from "react";
-import { Line, Bar  } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 import "chart.js/auto";
+import AttendanceCard from "./AttendanceCard"; // Import the AttendanceCard component
 
 function Chart({ monthWeeks, vMonthWeeks }) {
   if (!monthWeeks || monthWeeks.length === 0 || !vMonthWeeks || vMonthWeeks.length === 0) {
@@ -12,6 +13,9 @@ function Chart({ monthWeeks, vMonthWeeks }) {
     sunday.setDate(sunday.getDate() - sunday.getDay());
     return sunday;
   }
+
+
+
 
   const chartData = {
     labels: monthWeeks.map((week) =>
@@ -33,7 +37,7 @@ function Chart({ monthWeeks, vMonthWeeks }) {
       },
       {
         label: "Visitor Attendance",
-        data: vMonthWeeks.map((week) => week.members.length), // Assuming 'visitors' property exists
+        data: vMonthWeeks.map((week) => week.members.length),
         borderColor: "#FF6384",
         backgroundColor: "#FF6384",
         pointBorderColor: "#FF6384",
@@ -53,7 +57,6 @@ function Chart({ monthWeeks, vMonthWeeks }) {
         lineTension: 0.4,
         borderWidth: 10,
       },
-
     ],
     options: {
       scales: {
@@ -70,6 +73,16 @@ function Chart({ monthWeeks, vMonthWeeks }) {
     <div>
       <h2>Member and Visitor Attendance</h2>
       <Line data={chartData} />
+      <div className="card-container">
+        {monthWeeks.map((week, index) => (
+          <AttendanceCard
+            key={index}
+            weekNumber={week.weekNumber}
+            memberAttendance={week.members.length}
+            visitorAttendance={vMonthWeeks[index].members.length}
+          />
+        ))}
+      </div>
     </div>
   );
 }

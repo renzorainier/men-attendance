@@ -91,10 +91,13 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
       <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
         <table className="table-auto  w-full min-w-max ">
           <thead>
-            <tr className="bg-gray-100 ">
-              <th className="px-6 py-4 text-center text-2xl text-gray-800 ">
+            <tr className="bg-gray-100">
+              <th
+                className="px-6 py-4 text-center text-2xl text-gray-800"
+                style={{ width: "100px" }}>
                 Members
               </th>
+
               {monthWeeks.map((week) => (
                 <th
                   key={week.weekNumber}
@@ -152,7 +155,7 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
           />
         </div>
         <div className=" shadow-lg border rounded-lg p-5">
-        <Chart monthWeeks={monthWeeks} vMonthWeeks={vMonthWeeks} />
+          <Chart monthWeeks={monthWeeks} vMonthWeeks={vMonthWeeks} />
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ function FetchVisitors({
   vSetMonthWeeks,
 }) {
   const [allDocuments, setAllDocuments] = useState([]);
+  const [noRecords, setNoRecords] = useState(false); // State to track if there are no records for the month
 
   function getFirstSundayOfMonth(date) {
     const firstOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
@@ -28,13 +29,22 @@ function FetchVisitors({
             ...doc.data(),
           }))
         );
+
+        // Check if there are no records for the selected month
+        const recordsExist = allDocuments.some((doc) =>
+          Object.keys(doc).some(
+            (weekNumber) => parseInt(weekNumber) >= selectedMonth * 4
+          )
+        );
+
+        setNoRecords(!recordsExist);
       } catch (error) {
         console.error("Error FetchVisitorsing data from Firestore:", error);
       }
     };
 
     FetchVisitorsAllDocuments();
-  }, []);
+  }, [selectedMonth]); // Run effect when selectedMonth changes
 
   useEffect(() => {
     if (allDocuments.length > 0) {
@@ -110,62 +120,70 @@ function FetchVisitors({
   }
 
   const renderTable = () => {
-    if (tableData.length === 0) {
-      return <div className="no-data-message">No visitors this month</div>;
-    } else {
+    const membersWithAttendance = allDocuments.filter((member) =>
+      vMonthWeeks.some((week) => week.members.includes(member.id))
+    );
+
+    if (noRecords) {
       return (
         <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
-          <table className="table-auto w-full min-w-max ">
-            <thead>
-              <tr className="bg-gray-100 ">
-                <th className="px-6 py-4 text-center text-gray-800 ">
-                  Visitors
-                </th>
-                {vMonthWeeks.map((week) => (
-                  <th
-                    key={week.weekNumber}
-                    className="px-6 py-4 text-center text-gray-800">
-                    <div className="flex flex-col items-center">
-                      <span className="text-2xl font-bold">
-                        {getSundayOfWeek(week.startDate)
-                          .getDate()
-                          .toString()
-                          .padStart(2, "0")}
-                      </span>
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {allDocuments.map((member, index) => (
-                <tr
-                  key={member.id}
-                  className={`${
-                    index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"
-                  }`}>
-                  <td className="px-3 py-3 text-center">{member.id}</td>
-                  {vMonthWeeks.map((week) => (
-                    <td>
-                      <div
-                        key={week.weekNumber}
-                        className={` px-6 py-4 m-1 rounded-lg text-center ${
-                          week.members.includes(member.id)
-                            ? "bg-green-500"
-                            : "bg-gray-200"
-                        }`}></div>
-                      {member.attendance?.[week.weekNumber] && (
-                        <span className="text-lg">✓</span>
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>    
-          </table>
+          No visitor records for this month
         </div>
       );
     }
+
+    return (
+      <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+        <table className="table-auto w-full min-w-max ">
+          <thead>
+            <tr className="bg-gray-100 ">
+              <th
+                className="px-6 py-4 text-center text-2xl text-gray-800"
+                style={{ width: "100px" }}>
+                Members
+              </th>
+              {vMonthWeeks.map((week) => (
+                <th
+                  key={week.weekNumber}
+                  className="px-6 py-4 text-center text-gray-800">
+                  <div className="flex flex-col items-center">
+                    <span className="text-2xl font-bold">
+                      {getSundayOfWeek(week.startDate)
+                        .getDate()
+                        .toString()
+                        .padStart(2, "0")}
+                    </span>
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {membersWithAttendance.map((member, index) => (
+              <tr
+                key={member.id}
+                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
+                <td className="px-3 py-3 text-center">{member.id}</td>
+                {vMonthWeeks.map((week) => (
+                  <td>
+                    <div
+                      key={week.weekNumber}
+                      className={` px-6 py-4 m-1 rounded-lg text-center ${
+                        week.members.includes(member.id)
+                          ? "bg-green-500"
+                          : "bg-gray-200"
+                      }`}></div>
+                    {member.attendance?.[week.weekNumber] && (
+                      <span className="text-lg">✓</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
   };
 
   return <div>{renderTable()}</div>;
