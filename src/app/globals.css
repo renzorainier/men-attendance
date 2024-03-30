@@ -10,8 +10,7 @@ body {
     @apply  bg-gradient-to-br from-[#A2C579] to-[#61A3BA];
     font-family: 'Urbanist';
     }
-
-//this is notthing just me writing nonsense
+/* i am tired rn */
     @media (min-width: /* Your breakpoint for large screens (e.g., 1024px) */) {
         .xl\:grid-flow-row-dense {
           grid-template-rows: auto 1fr;
