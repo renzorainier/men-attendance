@@ -2,12 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+
+ /* @apply h-screen w-screen bg-gradient-to-br from-[#A9AFE3] to-[#A9CCE3] */
+
+
 body {
-    @apply bg-[#ffffff];
+    @apply  bg-gradient-to-br from-[#61A3BA] to-[#A2C579];
     font-family: 'Urbanist';
     }
 
 
+    @media (min-width: /* Your breakpoint for large screens (e.g., 1024px) */) {
+        .xl\:grid-flow-row-dense {
+          grid-template-rows: auto 1fr;
+        }
+      }
 
 
 
+
+
+      /* 61A3BA */
+      /* A2C579 */

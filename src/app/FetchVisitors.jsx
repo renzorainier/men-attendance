@@ -124,23 +124,34 @@ function FetchVisitors({
       vMonthWeeks.some((week) => week.members.includes(member.id))
     );
 
+    // if (noRecords) {
+    //   return (
+    //     <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+    //       No visitor records for this month
+    //     </div>
+    //   );
+    // }
+
     if (noRecords) {
-      return (
-        <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
-          No visitor records for this month
-        </div>
-      );
+      setTimeout(() => {
+        return (
+          <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+            No visitor records for this month
+          </div>
+        );
+      }, 1000); // 3000 milliseconds = 3 seconds
     }
 
+
     return (
-      <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+      <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5 bg-white">
         <table className="table-auto w-full min-w-max ">
           <thead>
             <tr className="bg-gray-100 ">
               <th
                 className="px-6 py-4 text-center text-2xl text-gray-800"
                 style={{ width: "100px" }}>
-                Members
+               Visitors
               </th>
               {vMonthWeeks.map((week) => (
                 <th
@@ -170,7 +181,7 @@ function FetchVisitors({
                       key={week.weekNumber}
                       className={` px-6 py-4 m-1 rounded-lg text-center ${
                         week.members.includes(member.id)
-                          ? "bg-green-500"
+                          ? "bg-[#61A3BA]"
                           : "bg-gray-200"
                       }`}></div>
                     {member.attendance?.[week.weekNumber] && (

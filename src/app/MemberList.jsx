@@ -88,7 +88,7 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
   // Render function for displaying table
   const renderTable = () => {
     return (
-      <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+      <div className=" overflow-x-auto shadow-lg border rounded-lg p-5 bg-white">
         <table className="table-auto  w-full min-w-max ">
           <thead>
             <tr className="bg-gray-100">
@@ -101,7 +101,7 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
               {monthWeeks.map((week) => (
                 <th
                   key={week.weekNumber}
-                  className="px-6 py-4 text-center text-gray-800">
+                  className="px-6 py-4 text-center text-gray-800 ">
                   <div className="flex flex-col items-center">
                     <span className="text-2xl font-bold">
                       {getSundayOfWeek(week.startDate)
@@ -119,14 +119,14 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
               <tr
                 key={member.id}
                 className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
-                <td className="px-3 py-3 text-center">{member.id}</td>
+                <td className="px-3 py-3 text-center" >{member.id}</td>
                 {monthWeeks.map((week) => (
                   <td>
                     <div
                       key={week.weekNumber}
-                      className={` px-6 py-4 m-1 rounded-lg text-center ${
+                      className={`px-6 py-4 m-1 rounded-lg text-center ${
                         week.members.includes(member.id)
-                          ? "bg-green-500"
+                          ? "bg-[#A2C579]"
                           : "bg-gray-200"
                       }`}></div>
                     {member.attendance?.[week.weekNumber] && (
@@ -143,22 +143,28 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <div>{renderTable()}</div>
-        <div>
-          <FetchVisitors
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            vMonthWeeks={vMonthWeeks}
-            vSetMonthWeeks={vSetMonthWeeks}
-          />
-        </div>
-        <div className=" shadow-lg border rounded-lg p-5">
-          <Chart monthWeeks={monthWeeks} vMonthWeeks={vMonthWeeks} />
-        </div>
-      </div>
+<div className="mb-5">
+  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 xl:grid-flow-row-dense">
+    <div>{renderTable()}</div>
+    <div className="xl:order-3">
+      <FetchVisitors
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+        vMonthWeeks={vMonthWeeks}
+        vSetMonthWeeks={vSetMonthWeeks}
+      />
     </div>
+    <div>
+      <Chart
+        monthWeeks={monthWeeks}
+        vMonthWeeks={vMonthWeeks}
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+      />
+    </div>
+  </div>
+</div>
+
   );
 }
 

@@ -8,7 +8,7 @@ import FetchVisitors from "./FetchVisitors";
 // import "./globals.css"
 function Main() {
   return (
-    <div>
+    <div >
       <Fetch />
     </div>
   );

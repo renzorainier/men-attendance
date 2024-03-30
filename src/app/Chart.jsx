@@ -1,22 +1,29 @@
 import React from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
-import AttendanceCard from "./AttendanceCard"; // Import the AttendanceCard component
+import AttendanceCard from "./AttendanceCard";
 
 function Chart({ monthWeeks, vMonthWeeks }) {
-  if (!monthWeeks || monthWeeks.length === 0 || !vMonthWeeks || vMonthWeeks.length === 0) {
+  // Check if there is data available
+  if (!monthWeeks?.length || !vMonthWeeks?.length) {
     return <div>No attendance or visitor data to display</div>;
   }
 
-  function getSundayOfWeek(weekStartDate) {
+  // Function to get Sunday of the week
+  const getSundayOfWeek = (weekStartDate) => {
     const sunday = new Date(weekStartDate.getTime());
     sunday.setDate(sunday.getDate() - sunday.getDay());
     return sunday;
-  }
+  };
 
+  // Prepare data for the chart
+  const memberData = monthWeeks.map((week) => week.members.length);
+  const visitorData = vMonthWeeks.map((week) => week.members.length);
+  const totalData = monthWeeks.map(
+    (week, index) => week.members.length + vMonthWeeks[index].members.length
+  );
 
-
-
+  // Chart data configuration (with hidden legend)
   const chartData = {
     labels: monthWeeks.map((week) =>
       getSundayOfWeek(week.startDate).toLocaleDateString("default", {
@@ -27,33 +34,31 @@ function Chart({ monthWeeks, vMonthWeeks }) {
     datasets: [
       {
         label: "Member Attendance",
-        data: monthWeeks.map((week) => week.members.length),
-        borderColor: "#42A5F5",
-        backgroundColor: "#42A5F5",
-        pointBorderColor: "#42A5F5",
-        pointBackgroundColor: "#42A5F5",
+        data: memberData,
+        borderColor: "#A2C579",
+        backgroundColor: "#A2C579",
+        pointBorderColor: "#A2C579",
+        pointBackgroundColor: "#A2C579",
         lineTension: 0.4,
         borderWidth: 10,
       },
       {
         label: "Visitor Attendance",
-        data: vMonthWeeks.map((week) => week.members.length),
-        borderColor: "#FF6384",
-        backgroundColor: "#FF6384",
-        pointBorderColor: "#FF6384",
-        pointBackgroundColor: "#FF6384",
+        data: visitorData,
+        borderColor: "#61A3BA",
+        backgroundColor: "#61A3BA",
+        pointBorderColor: "#61A3BA",
+        pointBackgroundColor: "#61A3BA",
         lineTension: 0.4,
         borderWidth: 10,
       },
       {
         label: "Total Attendance",
-        data: monthWeeks.map((week, index) =>
-          week.members.length + vMonthWeeks[index].members.length
-        ),
-        borderColor: "#9932CC",
-        backgroundColor: "#9932CC",
-        pointBorderColor: "#9932CC",
-        pointBackgroundColor: "#9932CC",
+        data: totalData,
+        borderColor: "#D2DE32",
+        backgroundColor: "#D2DE32",
+        pointBorderColor: "#D2DE32",
+        pointBackgroundColor: "#D2DE32",
         lineTension: 0.4,
         borderWidth: 10,
       },
@@ -62,26 +67,40 @@ function Chart({ monthWeeks, vMonthWeeks }) {
       scales: {
         y: {
           ticks: {
-            stepSize: 1, // Ensure whole numbers on y-axis
+            stepSize: 1,
           },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false
         },
       },
     },
   };
+  console.log(chartData.options)
+
+  // Find the index of the current week
+  const currentDate = new Date();
+  const currentWeekStart = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate() - currentDate.getDay()
+  );
+  const currentWeekIndex = monthWeeks.findIndex(
+    (week) => week.startDate.getTime() === currentWeekStart.getTime()
+  );
 
   return (
     <div>
-      <h2>Member and Visitor Attendance</h2>
+      <AttendanceCard
+        monthWeeks={monthWeeks}
+        vMonthWeeks={vMonthWeeks}
+        totalData={totalData}
+        currentWeekIndex={currentWeekIndex}
+      />
+      <div className="shadow-lg border rounded-lg p-5 bg-white" >
       <Line data={chartData} />
-      <div className="card-container">
-        {monthWeeks.map((week, index) => (
-          <AttendanceCard
-            key={index}
-            weekNumber={week.weekNumber}
-            memberAttendance={week.members.length}
-            visitorAttendance={vMonthWeeks[index].members.length}
-          />
-        ))}
       </div>
     </div>
   );
