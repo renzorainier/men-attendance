@@ -39,6 +39,10 @@ function Fetch() {
     fetchAllDocuments();
   }, []);
 
+
+  // Helper Functions
+
+
   useEffect(() => {
     if (allDocuments.length > 0) {
       const currentDate = new Date(); // Get the current date
@@ -47,39 +51,43 @@ function Fetch() {
       const monthStart = new Date(currentYear, selectedMonth, 1);
       const monthEnd = new Date(currentYear, selectedMonth + 1, 0);
 
+
+      function createEmptyWeeks(monthStart, monthEnd) {
+        const weeks = [];
+        let weekStart = getFirstSundayOfMonth(monthStart);
+
+        while (weekStart <= monthEnd) {
+          if (
+            weekStart.getDay() === 0 &&
+            weekStart.getMonth() === monthStart.getMonth()
+          ) {
+            const weekEnd = new Date(weekStart.getTime());
+            weekEnd.setDate(weekStart.getDate() + 6);
+
+            weeks.push({
+              startDate: new Date(weekStart.getTime()),
+              endDate: weekEnd,
+              weekNumber: getWeekNumber(weekStart),
+              members: [],
+            });
+          }
+
+          weekStart.setDate(weekStart.getDate() + 7);
+        }
+
+        return weeks;
+      }
+
       const monthWeeks = createEmptyWeeks(monthStart, monthEnd);
       populateWeeksWithAttendance(monthWeeks, allDocuments, currentYear);
 
       setMonthWeeks(monthWeeks);
+
+
+
     }
   }, [allDocuments, selectedMonth]);
 
-  // Helper Functions
-  function createEmptyWeeks(monthStart, monthEnd) {
-    const weeks = [];
-    let weekStart = getFirstSundayOfMonth(monthStart);
-
-    while (weekStart <= monthEnd) {
-      if (
-        weekStart.getDay() === 0 &&
-        weekStart.getMonth() === monthStart.getMonth()
-      ) {
-        const weekEnd = new Date(weekStart.getTime());
-        weekEnd.setDate(weekStart.getDate() + 6);
-
-        weeks.push({
-          startDate: new Date(weekStart.getTime()),
-          endDate: weekEnd,
-          weekNumber: getWeekNumber(weekStart),
-          members: [],
-        });
-      }
-
-      weekStart.setDate(weekStart.getDate() + 7);
-    }
-
-    return weeks;
-  }
 
   function getWeekNumber(date) {
     const oneJan = new Date(date.getFullYear(), 0, 1);

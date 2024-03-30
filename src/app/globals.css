@@ -7,18 +7,20 @@
 
 
 body {
-    @apply  bg-gradient-to-br from-[#61A3BA] to-[#A2C579];
+    @apply  bg-gradient-to-br from-[#A2C579] to-[#61A3BA];
     font-family: 'Urbanist';
     }
 
-
+//this is notthing just me writing nonsense
     @media (min-width: /* Your breakpoint for large screens (e.g., 1024px) */) {
         .xl\:grid-flow-row-dense {
           grid-template-rows: auto 1fr;
         }
       }
 
-
+#title {
+  font: x-large;
+}
 
 
 

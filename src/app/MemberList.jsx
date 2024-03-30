@@ -20,39 +20,41 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
       const monthStart = new Date(currentYear, selectedMonth, 1);
       const monthEnd = new Date(currentYear, selectedMonth + 1, 0);
 
+      function createEmptyWeeks(monthStart, monthEnd) {
+        const weeks = [];
+        let weekStart = getFirstSundayOfMonth(monthStart);
+
+        while (weekStart <= monthEnd) {
+          if (
+            weekStart.getDay() === 0 &&
+            weekStart.getMonth() === monthStart.getMonth()
+          ) {
+            const weekEnd = new Date(weekStart.getTime());
+            weekEnd.setDate(weekStart.getDate() + 6);
+
+            weeks.push({
+              startDate: new Date(weekStart.getTime()),
+              endDate: weekEnd,
+              weekNumber: getWeekNumber(weekStart),
+              members: [],
+            });
+          }
+
+          weekStart.setDate(weekStart.getDate() + 7);
+        }
+
+        return weeks;
+      }
+
       const monthWeeks = createEmptyWeeks(monthStart, monthEnd);
       populateWeeksWithAttendance(monthWeeks, allDocuments, currentYear);
 
       setMonthWeeks(monthWeeks);
     }
-  }, [allDocuments, selectedMonth]);
+  }, [allDocuments, selectedMonth, ]);
 
   // Helper Functions
-  function createEmptyWeeks(monthStart, monthEnd) {
-    const weeks = [];
-    let weekStart = getFirstSundayOfMonth(monthStart);
 
-    while (weekStart <= monthEnd) {
-      if (
-        weekStart.getDay() === 0 &&
-        weekStart.getMonth() === monthStart.getMonth()
-      ) {
-        const weekEnd = new Date(weekStart.getTime());
-        weekEnd.setDate(weekStart.getDate() + 6);
-
-        weeks.push({
-          startDate: new Date(weekStart.getTime()),
-          endDate: weekEnd,
-          weekNumber: getWeekNumber(weekStart),
-          members: [],
-        });
-      }
-
-      weekStart.setDate(weekStart.getDate() + 7);
-    }
-
-    return weeks;
-  }
 
   function getWeekNumber(date) {
     const oneJan = new Date(date.getFullYear(), 0, 1);
@@ -88,83 +90,82 @@ function MemberList({ allDocuments, selectedMonth, setSelectedMonth }) {
   // Render function for displaying table
   const renderTable = () => {
     return (
-      <div className=" overflow-x-auto shadow-lg border rounded-lg p-5 bg-white">
-        <table className="table-auto  w-full min-w-max ">
-          <thead>
-            <tr className="bg-gray-100">
-              <th
-                className="px-6 py-4 text-center text-2xl text-gray-800"
-                style={{ width: "100px" }}>
-                Members
-              </th>
-
-              {monthWeeks.map((week) => (
+      <div id="table" className="p-5 bg-white font-bold rounded-lg">
+        <div className=" overflow-x-auto  rounded-lg bg-white">
+          <table className="table-auto  w-full text-center">
+            <thead>
+              <tr className="bg-[#A2C579]  ">
                 <th
-                  key={week.weekNumber}
-                  className="px-6 py-4 text-center text-gray-800 ">
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold">
-                      {getSundayOfWeek(week.startDate)
-                        .getDate()
-                        .toString()
-                        .padStart(2, "0")}
-                    </span>
-                  </div>
+                  className="px-6  py-4 text-center text-2xl text-white "
+                  style={{ width: "100px" }}>
+                  Members
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {allDocuments.map((member, index) => (
-              <tr
-                key={member.id}
-                className={`${index % 2 === 0 ? "bg-gray-50" : "bg-gray-60"}`}>
-                <td className="px-3 py-3 text-center" >{member.id}</td>
+
                 {monthWeeks.map((week) => (
-                  <td>
-                    <div
-                      key={week.weekNumber}
-                      className={`px-6 py-4 m-1 rounded-lg text-center ${
-                        week.members.includes(member.id)
-                          ? "bg-[#A2C579]"
-                          : "bg-gray-200"
-                      }`}></div>
-                    {member.attendance?.[week.weekNumber] && (
-                      <span className="text-lg">✓</span>
-                    )}
-                  </td>
+                  <th
+                    key={week.weekNumber}
+                    className="px-6 py-4 text-center text-gray-800 ">
+                    <div className="flex flex-col items-center">
+                      <span className="text-2xl text-white  font-bold">
+                        {getSundayOfWeek(week.startDate)
+                          .getDate()
+                          .toString()
+                          .padStart(2, "0")}
+                      </span>
+                    </div>
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {allDocuments.map((member, index) => (
+                <tr key={member.id}>
+                  <td className="px-3 py-3 text-center">{member.id}</td>
+                  {monthWeeks.map((week) => (
+                    <td key={member.id}>
+                      <div
+                        key={week.weekNumber}
+                        className={`px-6 py-4 m-1 rounded-lg text-center ${
+                          week.members.includes(member.id)
+                            ? "bg-[#A2C579]"
+                            : "bg-gray-200"
+                        }`}></div>
+                      {member.attendance?.[week.weekNumber] && (
+                        <span className="text-lg">✓</span>
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   };
 
   return (
-<div className="mb-5">
-  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 xl:grid-flow-row-dense">
-    <div>{renderTable()}</div>
-    <div className="xl:order-3">
-      <FetchVisitors
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        vMonthWeeks={vMonthWeeks}
-        vSetMonthWeeks={vSetMonthWeeks}
-      />
+    <div className="mb-5">
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 xl:grid-flow-row-dense">
+        <div>{renderTable()}</div>
+        <div className="xl:order-3">
+          <FetchVisitors
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            vMonthWeeks={vMonthWeeks}
+            vSetMonthWeeks={vSetMonthWeeks}
+          />
+        </div>
+        <div>
+          <Chart
+            monthWeeks={monthWeeks}
+            vMonthWeeks={vMonthWeeks}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+          />
+        </div>
+      </div>
     </div>
-    <div>
-      <Chart
-        monthWeeks={monthWeeks}
-        vMonthWeeks={vMonthWeeks}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-      />
-    </div>
-  </div>
-</div>
-
   );
 }
 
