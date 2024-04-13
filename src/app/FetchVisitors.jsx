@@ -4,7 +4,6 @@ import { db } from "./firebase.js";
 
 function FetchVisitors({
   selectedMonth,
-  setSelectedMonth,
   vMonthWeeks,
   vSetMonthWeeks,
 }) {
@@ -23,15 +22,15 @@ function FetchVisitors({
         const documentsRef = collection(db, "visitors");
         const querySnapshot = await getDocs(documentsRef);
 
-        setAllDocuments(
-          querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-        );
+        const documents = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setAllDocuments(documents);
 
         // Check if there are no records for the selected month
-        const recordsExist = allDocuments.some((doc) =>
+        const recordsExist = documents.some((doc) =>
           Object.keys(doc).some(
             (weekNumber) => parseInt(weekNumber) >= selectedMonth * 4
           )
@@ -39,12 +38,12 @@ function FetchVisitors({
 
         setNoRecords(!recordsExist);
       } catch (error) {
-        console.error("Error FetchVisitorsing data from Firestore:", error);
+        console.error("Error Fetching data from Firestore:", error);
       }
     };
 
     FetchVisitorsAllDocuments();
-  }, [selectedMonth, allDocuments]); // Run effect when selectedMonth changes
+  }, [selectedMonth]);
 
   useEffect(() => {
     if (allDocuments.length > 0) {
@@ -80,15 +79,14 @@ function FetchVisitors({
         return weeks;
       }
 
-      const vMonthWeeks = createEmptyWeeks(monthStart, monthEnd);
-      populateWeeksWithAttendance(vMonthWeeks, allDocuments, currentYear);
+      const newVMonthWeeks = createEmptyWeeks(monthStart, monthEnd);
+      populateWeeksWithAttendance(newVMonthWeeks, allDocuments, currentYear);
 
-      vSetMonthWeeks(vMonthWeeks);
+      vSetMonthWeeks(newVMonthWeeks);
     }
   }, [allDocuments, selectedMonth, vSetMonthWeeks]);
 
   // Helper Functions
-
 
   function getWeekNumber(date) {
     const oneJan = new Date(date.getFullYear(), 0, 1);
@@ -123,30 +121,20 @@ function FetchVisitors({
 
   const renderTable = () => {
     const membersWithAttendance = allDocuments.filter((member) =>
-      vMonthWeeks.some((week) => week.members.includes(member.id))
+      vMonthWeeks.some((week) =>  week.members.includes(member.id))
     );
 
-    // if (noRecords) {
-    //   return (
-    //     <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
-    //       No visitor records for this month
-    //     </div>
-    //   );
-    // }
-
     if (noRecords) {
-      setTimeout(() => {
-        return (
-          <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
-            No visitor records for this month
-          </div>
-        );
-      }, 1000); // 3000 milliseconds = 3 seconds
+      return (
+        <div className="mt-1 overflow-x-auto shadow-lg border rounded-lg p-5">
+          No visitor records for this month
+        </div>
+      );
     }
 
     return (
-      <div  id="table" className="p-5 bg-white font-bold rounded-lg">
-        <div className=" overflow-x-auto  rounded-lg bg-white">
+      <div id="table" className="p-5 bg-white font-bold rounded-lg">
+        <div className="overflow-x-auto  rounded-lg bg-white">
           <table className="table-auto  w-full text-center">
             <thead>
               <tr className="bg-[#61A3BA] ">
@@ -173,15 +161,13 @@ function FetchVisitors({
             </thead>
             <tbody>
               {membersWithAttendance.map((member, index) => (
-                <tr
-                  key={member.id}
-                 >
+                <tr key={member.id}>
                   <td className="px-3 py-3 text-center">{member.id}</td>
                   {vMonthWeeks.map((week) => (
                     <td key={member.id}>
                       <div
                         key={week.weekNumber}
-                        className={` px-6 py-4 m-1 rounded-lg text-center ${
+                        className={`px-6 py-4 m-1 rounded-lg text-center ${
                           week.members.includes(member.id)
                             ? "bg-[#61A3BA]"
                             : "bg-gray-200"
